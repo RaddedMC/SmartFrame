@@ -2,6 +2,6 @@
 
 Deps: PIL
 
-Key Files:
--- Fonts/font1.ttf
--- Colors.txt
+User editable files: 
+-- Fonts/font1.ttf < used in main ui
+-- Colors.txt < first 4 colors used in main ui

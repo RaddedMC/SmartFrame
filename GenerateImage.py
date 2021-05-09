@@ -1,5 +1,11 @@
 # RaddedMC's SmartFrame v2 -- GenerateImage.py
 # This program generates an image that is to be sent to the display source.
+
+# GenerateImage(cardsinstance, resx, resy, scale)
+# cardsinstance -- an array of cards, this will be copied and your original variable will not be changed
+# resx & resy   -- X and Y resolution
+# scale         -- an integer to adjust the size of everything, larger value = smaller text and more cards
+
 # Required deps: PIL, Card
 # KEY FILES: Fonts/font1.ttf
 #            Colors.txt
@@ -7,7 +13,7 @@
 def printG(string):
     print("Image Generator | " + str(string))
 
-def GenerateImage(cardsinstance, resx, resy):
+def GenerateImage(cardsinstance, resx, resy, scale):
     # Imports and key variables
     cards = cardsinstance.copy()
     
@@ -25,8 +31,8 @@ def GenerateImage(cardsinstance, resx, resy):
     
     # Assets
     printG("Gathering fonts...")
-    pixelratio = resx/400
-    textsizes = [50*pixelratio, 40*pixelratio, 30*pixelratio, 20*pixelratio]
+    pixelratio = resx/(scale * 100)
+    textsizes = [50*pixelratio, 40*pixelratio, 30*pixelratio, 15*pixelratio]
     fonts = []
     for textsize in textsizes:
         fonts.append(ImageFont.truetype("Fonts/font1.ttf",round(textsize)))
@@ -54,18 +60,19 @@ def GenerateImage(cardsinstance, resx, resy):
     
     
     # Draw time
-    # Reserve top 15% for clock
-    maxclockheight = round(resy*0.15)
-    maindraw.rectangle([(0,0),(resx, maxclockheight)], outline=colors[4],width=round(pixelratio))
+    # Reserve area under time for clock
+    maxclockheight = round((55*pixelratio)+(50*pixelratio))
+    maindraw.rectangle([(0,0),(resx, maxclockheight)], fill=colors[3])
     
     maindraw.text((10*pixelratio,0), strftime("%I:%M"), fill=colors[1], font=fonts[0]) #Hour
     maindraw.text((150*pixelratio,10*pixelratio), strftime("%p"), fill=colors[1], font=fonts[1]) #AM/PM
-    maindraw.text((10*pixelratio, 55*pixelratio), strftime("%A, %b %d, %Y"), fill=(255,255,255), font=fonts[2]) #Date
+    maindraw.text((10*pixelratio, 55*pixelratio), strftime("%A, %b %d, %Y"), fill=colors[0], font=fonts[2]) #Date
     
     printG("Generated: Time")
     
     
     # Draw cards
+    # Determine total number of cards
     cardsx = math.floor(resx/pixelratio/100)
     cardsy = math.floor((resy-maxclockheight)/pixelratio/100)
     printG("This SmartFrame (" + str(resx) + "x" + str(resy)+ ") can fit a " + str(cardsx) + "x" + str(cardsy) + " grid of cards.")
@@ -144,7 +151,9 @@ def GenerateImage(cardsinstance, resx, resy):
             else:
                 alttext+=" and 1 more card"
         printG("Some cards remaining! Setting alttext to \"" + alttext + "\"")
-    
+    if alttext:
+        maindraw.rectangle([(0,resy-(30*pixelratio)-5),(resx, resy)], fill=colors[3])
+        maindraw.text((10*pixelratio, resy-(30*pixelratio)), alttext, fill=colors[2], font=fonts[3])
     
     # Done!
     printG("Image generated!")
@@ -172,8 +181,15 @@ cards = [Card(files[0], "poggers", files[0], 2, 2),
          Card(files[3], "poggers", files[3], 1, 1),
          Card(files[2], "poggers", files[2], 4, 2),
          Card(files[2], "poggers", files[2], 4, 2),
-         Card(files[2], "poggers", files[2], 4, 2),]
+         Card(files[2], "poggers", files[2], 4, 2),
+         Card(files[1], "poggers", files[1], 4, 4),
+         Card(files[1], "poggers", files[1], 4, 4),
+         Card(files[1], "poggers", files[1], 4, 4),
+         Card(files[1], "poggers", files[1], 4, 4),
+         Card(files[1], "poggers", files[1], 4, 4),
+         Card(files[1], "poggers", files[1], 4, 4),
+         Card(files[1], "poggers", files[1], 4, 4)]
     
-GenerateImage(cards, 720, 1280).show()
-GenerateImage(cards, 1080, 1920).show()
-GenerateImage(cards, 2160, 3840).show()
+GenerateImage(cards, 720, 1280, 4).show()
+GenerateImage(cards, 1080, 1920, 8).show()
+GenerateImage(cards, 2160, 3840, 16).show()
