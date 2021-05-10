@@ -1,5 +1,7 @@
 # RaddedMC's SmartFrame
 
+--- This is still a work in progress, not ready for use yet!! ---
+
 Welcome to my SmartFrame V2 repo! This program is designed to grab your favourite data all over the internet and display it in a neatly formatted image. 
 You can use SmartFrame to send data to displays like a digital photo frame (link video), your phone (link iOS shortcut tutorial), or other infoboard-type devices. 
 
