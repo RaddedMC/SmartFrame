@@ -6,4 +6,8 @@
 000 255 000
 000 000 255
 # Replace these colors with your theme colors in RGB. format your numbers with zero-padding so that there is always 11 characters.
-# SmartFrame currently only uses 4 theme colors.
+# SmartFrame's main UI uses the first 4 theme colors.
+# Color 1 = primary -- used for date text
+# Color 2 = secondary -- used for clock
+# Color 3 = tertiary -- used for overflow text
+# Color 4 = background

@@ -9,7 +9,7 @@
 #   tilesX       -- returns width of image in tile units. (200 pixels per unit)
 #   tilesY       -- returns height of image in tile units.
 
-# Recommended card size:
+# Recommended card sizes:
 #  -- 1x1, single icon
 #  -- 2x2, icon and some text
 #  -- 4x2, long text
