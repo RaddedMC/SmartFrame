@@ -28,8 +28,13 @@ class Card:
         self.fileLocation = fileLocation
         self.alttext = alttext
         self.sourcename = sourcename
+        self.tilesx = tilesx
+        self.tilesy = tilesy
         print("New Card | " + sourcename + "'s card at " + fileLocation + " | Size: " + str(tilesx) + "x"+str(tilesy) + " | " + alttext)
         
+    def __str__(self):
+        return "Card object: " + self.sourcename + "'s card at " + self.fileLocation + " | Size: " + str(self.tilesx) + "x"+str(self.tilesy) + " | " + self.alttext
+    
     def Image():
         from PIL import Image
         return Image.open(fileLocation)

@@ -10,6 +10,8 @@
 # KEY FILES: Fonts/font1.ttf
 #            Colors.txt
 
+from pandas import * # Debug
+
 def printG(string):
     print("Image Generator | " + str(string))
 
@@ -44,19 +46,11 @@ def GenerateImage(cardsinstance, resx, resy, scale):
     for line in colorfileLines:
         if "#" in line:
             break
-        if len(colors) == 5:
-            printG("Reached color limit! SmartFrame currently only allows 5 theme colors.")
-            break
         else:
             colors.append((int(line[0:3]), int(line[4:7]), int(line[8:11])))
             printG("Added color " + line[0:3] + " " + line[4:7] + " " + line[8:11] + "!")
     
     printG("All assets prepared.")
-    
-    
-    # Draw background
-    
-    printG("Generated: Background")
     
     
     # Draw time
@@ -76,29 +70,36 @@ def GenerateImage(cardsinstance, resx, resy, scale):
     cardsx = math.floor(resx/pixelratio/100)
     cardsy = math.floor((resy-maxclockheight)/pixelratio/100)
     printG("This SmartFrame (" + str(resx) + "x" + str(resy)+ ") can fit a " + str(cardsx) + "x" + str(cardsy) + " grid of cards.")
-    cardarray = [[False]*cardsy]*cardsx # False = unused, True = used
+    cardarray = [[False for x in range(cardsx)] for y in range(cardsy)] # False = unused, True = used
         
     printG("Calculating spaces...")
+    colorint = 4 # Debug
     nocards = False
     # Loop through each x and y.
-    for x in range(len(cardarray)):
-        for y in range(len(cardarray)):
+    for x in range(len(cardarray)-1):
+        for y in range(len(cardarray)-1):
+            printG("Testing space (" + str(x) + ", " + str(y) + ")") # Debug
             # If there are no more cards, stop finding places for them
             if len(cards) == 0:
                 printG("Out of cards! Generation complete!")
                 nocards = True
                 break
         
-            # If space is filled, move to next space.
-            if cardarray[x][y]:
-                printG("("+str(x)+", "+str(y)+") is filled!")
+            # If space is filled or out of range, move to next space.
+            try:
+                if cardarray[x][y]:
+                    printG("("+str(x)+", "+str(y)+") is filled!")
+                    continue
+            except IndexError:
+                printG("("+str(x)+", "+str(y)+") is out of range!")
                 continue
             # If space is not filled:
             else:
                 printG("("+str(x)+", "+str(y)+") is empty!")
                 currentcard = cards[0] # Grab first card
-                currentcardrange = "[ (" + str(x) + ", " + str(y)+"), (" + str(x+currentcard.tilesx) + ", " + str(y+currentcard.tilesy) + ") ]"
-                printG("Trying card " + currentcard.sourcename + " with size ("+ str(currentcard.tilesx) + ", " + str(currentcard.tilesy)+ ") in area " + currentcardrange + "...")
+                currentcardrange = "[ (" + str(x) + ", " + str(y)+"), (" + str(x+currentcard.tilesx-1) + ", " + str(y+currentcard.tilesy-1) + ") ]"
+                printG("Trying card " + currentcard.sourcename + " with size ("+ str(currentcard.tilesx-1) + ", " + str(currentcard.tilesy-1)+ ") in area " + currentcardrange + "...")
+                print(currentcard)
                 used = False
                 for cardx in range(x,x+currentcard.tilesx): # If space+(1-x of card) and space +(1-y of card) are all false,
                     for cardy in range(y,y+currentcard.tilesy):
@@ -128,10 +129,21 @@ def GenerateImage(cardsinstance, resx, resy, scale):
                     printG("Setting range " + currentcardrange + " to filled...")
                     for cardx in range(x, x+currentcard.tilesx):
                         for cardy in range(y, y+currentcard.tilesy):
-                            cardarray[x][y] = True
+                            cardarray[cardx][cardy] = True
+                    print(DataFrame(cardarray)) # Debug
+                    
                     
                     # place card!
-                    printG("Placing card " + currentcard.sourcename + "...")
+                    printG("Placing card " + currentcard.sourcename + " at " + currentcardrange + "...")
+                    xstart = y*(100*pixelratio)
+                    ystart = x*(100*pixelratio)+maxclockheight
+                    xend = (pixelratio*(100)*currentcard.tilesy)+xstart
+                    yend = (pixelratio*(100)*currentcard.tilesx)+ystart
+                    maindraw.rectangle([(xstart,ystart),(xend, yend)], fill=colors[colorint], outline=colors[0], width = round(2*pixelratio)) # Debug
+                    if (colorint != 6): # Debug
+                        colorint+=1
+                    else: # Debug
+                        colorint = 4
                     
                     # pop card from array!
                     printG("Card placed successfully! Removing from array...")
@@ -161,7 +173,7 @@ def GenerateImage(cardsinstance, resx, resy, scale):
 
 
 
-# Test code
+# ~~~Test code~~~
 from PIL import Image, ImageFont, ImageDraw
 from Card import Card
 from time import gmtime, strftime
@@ -169,26 +181,21 @@ import os
 import math
 files = os.listdir("Cards")
 
-cards = [Card(files[0], "poggers", files[0], 2, 2),
-         Card(files[1], "poggers", files[1], 4, 4),
+cards = [Card(files[0], "poggers", files[0], 4, 4),
+         Card(files[1], "poggers", files[1], 1, 1),
+         Card(files[2], "poggers", files[2], 2, 2),
+         Card(files[2], "poggers", files[2], 1, 1),
          Card(files[2], "poggers", files[2], 4, 2),
-         Card(files[3], "poggers", files[3], 1, 1),
-         Card(files[3], "poggers", files[3], 1, 1),
-         Card(files[3], "poggers", files[3], 1, 1),
-         Card(files[3], "poggers", files[3], 1, 1),
-         Card(files[3], "poggers", files[3], 1, 1),
-         Card(files[3], "poggers", files[3], 1, 1),
-         Card(files[3], "poggers", files[3], 1, 1),
+         Card(files[2], "poggers", files[2], 1, 1),
+         Card(files[2], "poggers", files[2], 1, 1),
+         Card(files[2], "poggers", files[2], 2, 2),
+         Card(files[2], "poggers", files[2], 1, 1),
+         Card(files[2], "poggers", files[2], 4, 4),
+         Card(files[2], "poggers", files[2], 1, 1),
          Card(files[2], "poggers", files[2], 4, 2),
-         Card(files[2], "poggers", files[2], 4, 2),
-         Card(files[2], "poggers", files[2], 4, 2),
-         Card(files[1], "poggers", files[1], 4, 4),
-         Card(files[1], "poggers", files[1], 4, 4),
-         Card(files[1], "poggers", files[1], 4, 4),
-         Card(files[1], "poggers", files[1], 4, 4),
-         Card(files[1], "poggers", files[1], 4, 4),
-         Card(files[1], "poggers", files[1], 4, 4),
-         Card(files[1], "poggers", files[1], 4, 4)]
+         Card(files[2], "poggers", files[2], 1, 1),
+         Card(files[2], "poggers", files[2], 1, 1)
+         ]
     
 GenerateImage(cards, 720, 1280, 4).show()
 GenerateImage(cards, 1080, 1920, 8).show()
