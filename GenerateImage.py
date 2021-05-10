@@ -82,7 +82,6 @@ def GenerateImage(cardsinstance, resx, resy, scale):
         printG("This SmartFrame (" + str(resx) + "x" + str(resy)+ ") can fit a " + str(cardsx) + "x" + str(cardsy) + " grid of cards.", "yellow")
         cardarray = [[False for x in range(cardsx)] for y in range(cardsy)] # False = unused, True = used
             
-        colorint = 4 # Debug
         nocards = False
         # Loop through each x and y.
         for y in range(0, cardsy):
@@ -107,13 +106,7 @@ def GenerateImage(cardsinstance, resx, resy, scale):
                     currentcard = ""
                     enoughspace = True
                     # Loop through all cards to find one that fits
-                    rangend = 0
-                    if len(cards) == 1:
-                        rangend = 1
-                    else:
-                        rangend = len(cards)-1
-                    for i in range(0,rangend):
-                        currentcard = cards[i]
+                    for i, currentcard in enumerate(cards):
                         currentcardrange = "[ (" + str(x) + ", " + str(y)+"), (" + str(x+currentcard.tilesx-1) + ", " + str(y+currentcard.tilesy-1) + ") ]"
                         printG("Trying card ["+str(i)+"] " + currentcard.sourcename + " with size ("+ str(currentcard.tilesx) + ", " + str(currentcard.tilesy)+ ") in area " + currentcardrange + "...", "blue")
                         used = False
@@ -156,17 +149,9 @@ def GenerateImage(cardsinstance, resx, resy, scale):
                         ystart = y*(100*pixelratio)+maxclockheight
                         xend = (pixelratio*(100)*currentcard.tilesx)+xstart
                         yend = (pixelratio*(100)*currentcard.tilesy)+ystart
-                        maindraw.rectangle([(xstart,ystart),(xend, yend)], fill=colors[colorint], outline=colors[0], width = round(2*pixelratio)) # Debug
-                        if colorint == 4: # Debug
-                            print("This card is RED")
-                        elif colorint == 5: # Debug
-                            print("This card is GREEN")
-                        elif colorint == 6: # Debug
-                            print("This card is BLUE")
-                        if (colorint != 6): # Debug
-                            colorint+=1
-                        else: # Debug
-                            colorint = 4
+                        #maindraw.rectangle([(xstart,ystart),(xend, yend)], fill=colors[4], outline=colors[0], width = round(2*pixelratio)) # Debug
+                        image = currentcard.Image(xend-xstart, yend-ystart)
+                        mainimage.paste(image, (round(xstart),round(ystart)))
                         
                         # pop card from array!
                         printG("Card placed successfully! Removing from array...", "green")
@@ -210,22 +195,11 @@ import os
 import math
 files = os.listdir("Cards")
 
-cards = [Card(files[0], "poggers", files[0], 1, 1),
+cards = [Card(files[0], "poggers", files[0], 2, 2),
          Card(files[1], "poggers", files[1], 4, 4),
-         Card(files[2], "poggers", files[2], 2, 2),
-         Card(files[2], "poggers", files[2], 1, 1),
          Card(files[2], "poggers", files[2], 4, 2),
-         Card(files[2], "poggers", files[2], 1, 1),
-         Card(files[2], "poggers", files[2], 1, 1),
-         Card(files[2], "poggers", files[2], 2, 2),
-         Card(files[2], "poggers", files[2], 1, 1),
-         Card(files[2], "poggers", files[2], 4, 4),
-         Card(files[2], "poggers", files[2], 1, 1),
-         Card(files[2], "poggers", files[2], 4, 2),
-         Card(files[2], "poggers", files[2], 1, 1),
-         Card(files[2], "poggers", files[2], 1, 1)
-         ]
+         Card(files[3], "poggers", files[3], 1, 1)]
     
-#GenerateImage(cards, 720, 1280, 4).show()
-#GenerateImage(cards, 1080, 1920, 8).show()
-GenerateImage(cards, 2160, 3840, 16).show()
+GenerateImage(cards, 720, 1280, 4).show()
+GenerateImage(cards, 1080, 1920, 8).show()
+GenerateImage(cards, 1920, 1080, 24).show()

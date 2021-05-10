@@ -3,6 +3,7 @@
 # Required deps: PIL
 
 #   fileLocation -- The location of the image attached to this object. Used in Image()
+#                    JUST GIVE THE IMAGE's FILENAME. Card.Image() will do all the heavy lifting.
 #   alttext      -- Alternate text for the image that contains basic data.
 #   sourcename   -- The name of the source that generated the Card.
 #   Image()      -- returns a PIL image generated from fileLocation.
@@ -35,6 +36,10 @@ class Card:
     def __str__(self):
         return "Card object: " + self.sourcename + "'s card at " + self.fileLocation + " | Size: " + str(self.tilesx) + "x"+str(self.tilesy) + " | " + self.alttext
     
-    def Image():
+    def Image(self, sizex=200, sizey=200):
         from PIL import Image
-        return Image.open(fileLocation)
+        import os
+        imgdir = os.getcwd().replace('\\', '/')+"/Cards/"+self.fileLocation
+        image = Image.open(imgdir)
+        image = image.resize((round(sizex), round(sizey)))
+        return image
