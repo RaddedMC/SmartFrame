@@ -7,6 +7,7 @@ Dependencies (can be installed with pip install):
 --- Pillow: The image library used to draw your data! 
 --- termcolor: Used for fancy logging colours 
 --- pandas: Used in GenerateImage to keep track of what cards are where during debugging 
+--- console-menu: Used to create config files
 
 Known bugs:
 --- Occasionally a card will be placed lower down even if there is space for it.

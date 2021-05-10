@@ -1,7 +1,5 @@
 # RaddedMC's SmartFrame v2 -- Card.py
 
-# Required deps: PIL
-
 #   fileLocation -- The location of the image attached to this object. Used in Image()
 #                    JUST GIVE THE IMAGE's FILENAME. Card.Image() will do all the heavy lifting.
 #   alttext      -- Alternate text for the image that contains basic data.
@@ -9,6 +7,10 @@
 #   Image()      -- returns a PIL image generated from fileLocation.
 #   tilesX       -- returns width of image in tile units. (200 pixels per unit)
 #   tilesY       -- returns height of image in tile units.
+
+# Required deps: Pillow
+
+# KEY FILES: Cards/
 
 # Recommended card sizes:
 #  -- 1x1, single icon

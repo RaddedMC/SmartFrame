@@ -6,7 +6,9 @@
 # resx & resy   -- X and Y resolution
 # scale         -- an integer to adjust the size of everything, larger value = smaller text and more cards
 
-# Required deps: PIL, Card
+# printG() -- just a simple output formatter
+
+# Required deps: Pillow, Card, termcolor, pandas
 # KEY FILES: Fonts/font1.ttf
 #            Colors.txt
 
