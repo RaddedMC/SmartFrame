@@ -190,18 +190,18 @@ def GenerateImage(cardsinstance, resx, resy, scale):
 
 
 # ~~~Test code~~~
-from PIL import Image, ImageFont, ImageDraw
-from Card import Card
-from time import gmtime, strftime
-import os
-import math
-files = os.listdir("Cards")
+#from PIL import Image, ImageFont, ImageDraw
+#from Card import Card
+#from time import gmtime, strftime
+#import os
+#import math
+#files = os.listdir("Cards")
 
-cards = [Card(files[0], "poggers", files[0], 2, 2),
-         Card(files[1], "poggers", files[1], 4, 4),
-         Card(files[2], "poggers", files[2], 4, 2),
-         Card(files[3], "poggers", files[3], 1, 1)]
+#cards = [Card(files[0], "poggers", files[0], 2, 2),
+         #Card(files[1], "poggers", files[1], 4, 4),
+         #Card(files[2], "poggers", files[2], 4, 2),
+         #Card(files[3], "poggers", files[3], 1, 1)]
     
-GenerateImage(cards, 720, 1280, 4).show()
-GenerateImage(cards, 1080, 1920, 8).show()
-GenerateImage(cards, 1920, 1080, 24).show()
+#GenerateImage(cards, 720, 1280, 4).show()
+#GenerateImage(cards, 1080, 1920, 8).show()
+#GenerateImage(cards, 1920, 1080, 24).show()
