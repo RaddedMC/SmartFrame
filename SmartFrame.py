@@ -176,7 +176,7 @@ def ReadConfig():
         printS("Refresh time is " + str(refreshtime) + " seconds!", "green")
         
         printS("Setting up output objects...", "blue")
-        startdex = 15
+        startdex = 16
         outputObjects = []
         while True:
             printS("Starting at line "+ str(startdex) + " of config file...", "yellow")
@@ -268,10 +268,11 @@ def Config():
             config += "# Refresh time (seconds): Higher is better to prevent API spam, lower gives more up-to-date info\n"
             config += options.get(menchoice)
             
-            config += "# Use this area to set up output types. Start with the output resolution in the form 1920x1080s4, where 4 is the scale factor.."
+            config += "# Use this area to set up output types. Start with the output resolution in the form 1920x1080s4, where 4 is the scale factor..\n"
             config += "# On a new line, write the full file output path.\n"
-            config += "# On another line, write a command to run after generating the photo. ($ will be substituted for the file location)\n"
-            config += "# On another line, write a command to run before generating the photo. ($ will be substituted for the file location)\n"
+            config += "# On another line, write a command to run after generating the photo.\n"
+            config += "# On another line, write a command to run before generating the photo.\n"
+            config += "# If you only add one command, it will run after generating the photo.\n"
             config += "# Finally, write 'delete' on another line at the end of your entry if you want the file to be deleted after the 'after' command is ran.\n"
             config += "# Use a hashtag on a newline to seperate output entries.\n"
             config += "# Ex:\n"
