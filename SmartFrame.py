@@ -362,7 +362,8 @@ def main():
         else:
             printS("Error: There are no plugins! Please add some plugins before using SmartFrame.", "red")
             exit(0)
-                    
+                 
+                 
         
         # Output images
         printS("Preparing outputs...", "blue")        
@@ -403,7 +404,7 @@ def main():
         printS("Clearing cards...")
         for card in cards:
             os.remove(card.fileLocation)
-            printS("Cleared card " + fileLocation)
+            printS("Cleared card " + card.fileLocation)
         
         
         # Calculate sleep time

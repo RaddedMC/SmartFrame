@@ -41,7 +41,7 @@ class Card:
     def Image(self, sizex=200, sizey=200):
         from PIL import Image
         import os
-        imgdir = os.getcwd().replace('\\', '/')+"/Cards/"+self.fileLocation
+        imgdir = self.fileLocation
         image = Image.open(imgdir)
         image = image.resize((round(sizex), round(sizey)))
         return image
