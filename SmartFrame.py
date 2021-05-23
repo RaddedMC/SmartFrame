@@ -20,7 +20,7 @@
 # KEY FILES: config.cfg
 #            Plugins/
 
-builddate = "2021 - 05 - 10"
+builddate = "2021 - 05 - 22"
 
 # Imports
 import os, time
@@ -268,14 +268,14 @@ def Config():
             config += "# Refresh time (seconds): Higher is better to prevent API spam, lower gives more up-to-date info\n"
             config += options.get(menchoice)
             
-            config += "# Use this area to set up output types. Start with the output resolution in the form 1920x1080.\n"
+            config += "# Use this area to set up output types. Start with the output resolution in the form 1920x1080s4, where 4 is the scale factor.."
             config += "# On a new line, write the full file output path.\n"
             config += "# On another line, write a command to run after generating the photo. ($ will be substituted for the file location)\n"
             config += "# On another line, write a command to run before generating the photo. ($ will be substituted for the file location)\n"
             config += "# Finally, write 'delete' on another line at the end of your entry if you want the file to be deleted after the 'after' command is ran.\n"
             config += "# Use a hashtag on a newline to seperate output entries.\n"
             config += "# Ex:\n"
-            config += "# 1920x1080\n"
+            config += "# 1920x1080s4\n"
             config += "# /home/RaddedMC/SmartFrame1080.png\n"
             config += "# bash /home/RaddedMC/Scripts/SmartFrameOut.sh $\n"
             config += "# bash /home/RaddedMC/Scripts/SmartFrameIn.sh $\n"
@@ -328,27 +328,47 @@ def main():
         # Gather cards from plugins
         printS("Gathering cards...", "blue")
         
+        cards = []
+        files = os.listdir("Plugins/")
+        
         #Get list of plugins in plugin folder
-        
-        #For each plugin....
-        #Run
-        #Append all new cards to variable cards
-        
-        files = os.listdir("Cards")
-
-        cards = [Card(files[0], "poggers", files[0], 2, 2),
-                 Card(files[1], "poggers", files[1], 4, 4),
-                 Card(files[2], "poggers", files[2], 4, 2),
-                 Card(files[3], "poggers", files[3], 1, 1)]
-        printS("Cards gathered!", "green")
-        
+        if files:
+            for file in files:
+                if file.endswith(".py"):
+                    printS("Running plugin " + file, "yellow")
+                    
+                    # Get modules
+                    import importlib.util
+                    spec = importlib.util.spec_from_file_location("module.name", "Plugins/" + file)
+                    plugin = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(plugin)
+                    
+                    # Run plugin
+                    try:
+                        plugincards = plugin.GetCard()
+                    except:
+                        printS("Error with plugin " + file + "!", "red")
+                        import traceback
+                        traceback.print_exc()
+                        continue
+                    
+                    if isinstance(plugincards, list):
+                        for card in plugincards:
+                                cards.append(card) # Append all new cards to variable cards
+                                printS("Plugin " + file + " ran successfully!", "green")
+                    elif isinstance(plugincards, Card):
+                        cards.append(plugincards)
+        else:
+            printS("Error: There are no plugins! Please add some plugins before using SmartFrame.", "red")
+            exit(0)
+                    
         
         # Output images
         printS("Preparing outputs...", "blue")        
         for idx, config in enumerate(configs):
             try:
                 # Run before scripts
-                if (config.introcommand != None or config.introcommand != ""):
+                if (config.outrocommand):
                     printS("Running " + config.introcommand + " ...", "blue")
                     printS("Exit code: " + str(os.system(config.introcommand)), "green")
                 
@@ -357,7 +377,7 @@ def main():
                 GenerateImage(cards, int(config.xres), int(config.yres), int(config.scale)).save(config.outputlocation.replace('\\','/'))
                 
                 # Run after scripts
-                if (config.outrocommand != None or config.outrocommand != ""):
+                if (config.outrocommand):
                     printS("Running " + config.outrocommand + " ...", "blue")
                     printS("Exit code: " + str(os.system(config.outrocommand)), "green")
                 

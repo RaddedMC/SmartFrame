@@ -30,10 +30,14 @@ COLORS = []
 
 #### YOUR CODE HERE ####
 def GenerateCard():
-    tilesX = 2 # Change this to change tile size
+    tilesX = 4 # Change this to change tile size
     tilesY = 2 # Change this to change tile size
-    image = Image.new("RGB", (tilesX*200, tilesY*200))
+    dpifactor = 200 # Change this to increase card resolution. Don't go too high!!!
+    imageresx = tilesX*200
+    imageresy = tilesY*200
+    image = Image.new("RGB", (tilesX*dpifactor, tilesY*dpifactor))
     alttext = ""
+    imagedraw = ImageDraw.Draw(image)                 
     
     # Your code here
     
@@ -50,7 +54,10 @@ def GetCard():
     currentLocation = os.getcwd().replace('\\', '/')
     nextindex = currentLocation.rfind("/")
     global SMARTFRAMEFOLDER
-    SMARTFRAMEFOLDER = currentLocation[:nextindex]
+    if currentLocation.endswith("Plugins"):
+        SMARTFRAMEFOLDER = currentLocation[:nextindex]
+    else:
+        SMARTFRAMEFOLDER = currentLocation
     printC("SmartFrame is located in " + SMARTFRAMEFOLDER, "green")
     
     sys.path.append(SMARTFRAMEFOLDER)
@@ -88,6 +95,6 @@ def printC(string, color = "white"):
     from termcolor import colored
     print(sourcename + " | " + colored(str(string), color))
     
-if __name__ = "__main__":
+if __name__ == "__main__":
     GetCard()
     
