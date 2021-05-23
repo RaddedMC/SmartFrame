@@ -329,6 +329,7 @@ def main():
         printS("Gathering cards...", "blue")
         
         #Get list of plugins in plugin folder
+        
         #For each plugin....
         #Run
         #Append all new cards to variable cards
@@ -378,8 +379,10 @@ def main():
         
         
         # Delete card output images
+        printS("Clearing cards...")
         for card in cards:
-            os.remove(card.)
+            os.remove(card.fileLocation)
+            printS("Cleared card " + fileLocation)
         
         
         # Calculate sleep time

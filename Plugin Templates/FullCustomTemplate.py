@@ -16,7 +16,9 @@
 # Use printC(text, color in text) if you need to print. 
 # Edit the PIL 'image' variable in GenerateCard in any way that you like! The end result of the variable will be what appears in SmartFrame.
 # To test, just run your card in a terminal! The image will appear in your Smartframe/Cards folder. I recommend deleting this file before running SmartFrame again.
+# Note that if your plugin crashes, it take down the whole SmartFrame process. However, tracebacks will be outputted to the user.
 
+# Add any user-definable variables here! (API keys, usernames, etc.)
 sourcename = "Set your card's default sourcename here"
 
 from PIL import Image, ImageFont, ImageDraw
