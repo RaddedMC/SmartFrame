@@ -1,7 +1,7 @@
 #!/bin/python3
-# RaddedMC's SmartFrame v2 -- FullCustomTemplate.py
+# RaddedMC's SmartFrame v2 -- SmallText.py
 # This is a plugin template for SmartFrame v2.
-# This particular template is fully custom -- you can set your output to whatever image or tile size you'd like.
+# This particular template lets you set 4 lines of text in a 2x2 card or 4x2 card.
 
 # Required deps: Pillow, termcolor
 
@@ -9,13 +9,11 @@
 # Assume you have root priveleges.
 # Use the variables in GenerateCard() to change the tile size and pixel density of your Card.
 # If you need additional files, place them into a folder of the same name as your plugin.
-# The module will grab the user's colors before running your code. This will be located in COLORS
-# The user's font is located in SMARTFRAMEFOLDER + "/Fonts/font1.ttf".
 # Use the global variable SMARTFRAMEFOLDER for a string with the location of the SmartFrame folder.
 # For debug/overflow purposes, make sure you set alttext to something that accurately represents your collected data.
 # Use printC(text, color of text) if you need to print. 
 
-# Edit the PIL 'image' variable in GenerateCard in any way that you like! The end result of the variable will be what appears in SmartFrame.
+# Make sure to change the sourcename, lines 1-4, and alttext variables!
 
 # To test, just run your card in a terminal! The image will appear in your Smartframe/Cards folder. I recommend deleting this file before running SmartFrame again.
 # Note that if your plugin crashes, it will not take down the whole SmartFrame process. However, tracebacks will be outputted to the user.
@@ -33,20 +31,48 @@ SMARTFRAMEFOLDER = ""
 COLORS = []
 
 #### YOUR CODE HERE ####
-def GenerateCard():
-    tilesX = 4 # Change this to change tile size
-    tilesY = 2 # Change this to change tile size
-    dpifactor = 200 # Change this to increase card resolution. Don't go too high!!!
-    imageresx = tilesX*200
-    imageresy = tilesY*200
-    image = Image.new("RGB", (tilesX*dpifactor, tilesY*dpifactor))
-    alttext = ""
-    imagedraw = ImageDraw.Draw(image)                 
+def GetCardData():
+    line1 = sourcename
+    line2 = "Line 2"
+    line3 = "Line 3"
+    line4 = "Line 4"
+    alttext = "Whatever you want!"
     
     # Your code here
     
-    return image, alttext, tilesX, tilesY
+    return line1, line2, line3, line4, alttext
 #### YOUR CODE HERE ####
+
+def GenerateCard():
+
+    # EDIT THESE TO CUSTOMIZE YOUR PLUGIN'S APPEARANCE!
+    tilesX = 2 # Change this to change tile size
+    tilesY = 2 # Change this to change tile size
+    dpifactor = 200
+    # Change this to increase card resolution. Don't go too high!!!
+    backgroundcolor = COLORS[3] # Change this to a 3-value tuple (255, 200, 100) to change the background colour!
+    textcolor = COLORS[1] # Change this to a 3-value tuple to change the text colour!
+    
+    imageresx = tilesX*dpifactor
+    imageresy = tilesY*dpifactor
+    image = Image.new("RGB", (tilesX*dpifactor, tilesY*dpifactor))
+    imagedraw = ImageDraw.Draw(image)                 
+    imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=backgroundcolor)
+
+    line1, line2, line3, line4, alttext = GetCardData()
+    
+    font = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 15*round(dpifactor/50))
+    imagedraw.text((dpifactor/50,0), line1, font=font, fill=textcolor)
+    printC("Line 1: " + line1)
+    imagedraw.text((dpifactor/50,imageresy/4), line2, font=font, fill=textcolor)
+    printC("Line 2: " + line2)
+    imagedraw.text((dpifactor/50,imageresy/2), line3, font=font, fill=textcolor)
+    printC("Line 3: " + line3)
+    imagedraw.text((dpifactor/50,3*imageresy/4), line4, font=font, fill=textcolor)
+    printC("Line 4: " + line4)
+    
+    
+    return image, alttext, tilesX, tilesY
 
 
 
