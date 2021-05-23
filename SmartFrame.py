@@ -117,7 +117,7 @@ def Title():
     print("By RaddedMC https://github.com/RaddedMC | https://youtube.com/RaddedMC | https://reddit.com/u/RaddedMC")
     print("      with help from BOX OF COOL PEEPS (https://discord.gg/9Ms4bFw)")
     time.sleep(0.5)
-    print(("{0:>"+str(widthlimit)+"}").format("@Cannoli -- Plugin design"))
+    print(("{0:>"+str(widthlimit)+"}").format("@Cannoli -- Plugin design and Linux testing"))
     time.sleep(0.1)
     print(("{0:>"+str(widthlimit)+"}").format("@Volvo  -- General cringe"))
     time.sleep(0.1)
@@ -278,8 +278,8 @@ def Config():
             config += "# Ex:\n"
             config += "# 1920x1080s4\n"
             config += "# /home/RaddedMC/SmartFrame1080.png\n"
-            config += "# bash /home/RaddedMC/Scripts/SmartFrameOut.sh $\n"
-            config += "# bash /home/RaddedMC/Scripts/SmartFrameIn.sh $\n"
+            config += "# bash /home/RaddedMC/Scripts/SmartFrameOut.sh\n"
+            config += "# bash /home/RaddedMC/Scripts/SmartFrameIn.sh\n"
             config += "# delete\n"
             config += "# #\n"
             
