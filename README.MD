@@ -108,6 +108,7 @@ These colors need to be in RGB form, as they appear in the file.
 
 ##### Fonts:
 Simply take your favourite TTF font and copy it into the `Fonts/` folder, then rename it to `font1.ttf`.
+The default font is 8-bit Operator, available here: https://www.dafont.com/pixel-operator-old2.font
 
 ------------
 #### Add plugins!
