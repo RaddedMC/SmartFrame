@@ -181,6 +181,9 @@ def GenerateImage(cardsinstance, resx, resy, scale):
         # Done!
         printG("Image generated!", "green")
         return mainimage
+    except KeyboardInterrupt:
+            print("Keyboard interrupt detected! Exiting...")
+            exit(0)
     except:
         printG("There was an error!", "red")
         import traceback
