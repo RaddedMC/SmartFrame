@@ -100,7 +100,11 @@ def ConfigFileError(error = "Unknown error in config file!"):
 
 # Fancy title screen
 def Title():
-    widthlimit = os.get_terminal_size().columns
+    try:
+        widthlimit = os.get_terminal_size().columns
+    except OSError:
+        printS("Unable to get terminal width. We are not running in a console.")
+        return None
     print("\nSmartFrame | Options [-h / -c / -j]\n")
     print(("{0:<"+str(widthlimit)+"}").format("    SSS  MM   MM   AAA   RRR   TTTTT            |\               "))
     print(("{0:<"+str(widthlimit)+"}").format("   S     M M M M  A   A  R  R    T              | \              "))
