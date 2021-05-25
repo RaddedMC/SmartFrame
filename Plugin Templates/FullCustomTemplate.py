@@ -16,6 +16,7 @@
 # Use printC(text, color of text) if you need to print. 
 
 # Edit the PIL 'image' variable in GenerateCard in any way that you like! The end result of the variable will be what appears in SmartFrame.
+# If you return set all variables to None (ex, if data can't be found), SmartFrame will display nothing for this Card.
 
 # To test, just run your card in a terminal! The image will appear in your Smartframe/Cards folder. I recommend deleting this file before running SmartFrame again.
 # Note that if your plugin crashes, it will not take down the whole SmartFrame process. However, tracebacks will be outputted to the user.
@@ -78,22 +79,28 @@ def GetCard():
             COLORS.append((int(line[0:3]), int(line[4:7]), int(line[8:11])))
             printC("Added color " + line[0:3] + " " + line[4:7] + " " + line[8:11] + "!")
 
-
     # Generate card...
     printC("Starting card generation...", "blue")
     image, alttext, tilesX, tilesY = GenerateCard() # Calls the above function to get data
-    printC("Finished generating card!...", "green")
     
-    
-    # Setup output location
-    outputLocation = SMARTFRAMEFOLDER + "/Cards/" + sourcename + ".png"
-    printC("Will output to " + outputLocation, "cyan")
-    
-    # Save
-    image.save(outputLocation)
-    printC("Image saved to  " + outputLocation + "!", "green")
-    
-    return Card(outputLocation, alttext, sourcename, tilesX, tilesY)
+    # Check if card exists
+    if image and alttext and tilesX and tilesY:
+        printC("Finished generating card!...", "green")
+        
+        
+        # Setup output location
+        outputLocation = SMARTFRAMEFOLDER + "/Cards/" + sourcename + ".png"
+        printC("Will output to " + outputLocation, "cyan")
+        
+        # Save
+        image.save(outputLocation)
+        printC("Image saved to  " + outputLocation + "!", "green")
+        
+        return Card(outputLocation, alttext, sourcename, tilesX, tilesY)
+    else:
+        # No cards
+        printC("No cards to return!...", "red")
+        return None
     
 def printC(string, color = "white"):
     from termcolor import colored

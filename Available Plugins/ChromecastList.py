@@ -1,7 +1,8 @@
 #!/bin/python3
-# RaddedMC's Chromecast plugin for SmartFrame
+# RaddedMC's ChromecastList plugin for SmartFrame
 # Built using the SmallText template.
 
+# This plugin will list 3 Chromecast enabled devices on your network.
 # No setup required.
 
 # Required deps: Pillow, termcolor, pychromecast
@@ -34,7 +35,8 @@ def GetCardData():
         line2 = chromecasts[0].device.friendly_name
         printC("Found chromecast " + chromecasts[0].device.friendly_name, "green")
     except:
-        line2 = "No chromecasts available!"
+        printC("No Chromecasts available! Returning null card...", "red")
+        return None, None, None, None, None
     try:
         line3 = chromecasts[1].device.friendly_name
         printC("Found chromecast " + chromecasts[1].device.friendly_name, "green")
@@ -66,21 +68,23 @@ def GenerateCard():
     image = Image.new("RGB", (tilesX*dpifactor, tilesY*dpifactor))
     imagedraw = ImageDraw.Draw(image)                 
     imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=backgroundcolor)
-
+    
     line1, line2, line3, line4, alttext = GetCardData()
-    
-    font = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 15*round(dpifactor/50))
-    imagedraw.text((dpifactor/50,0), line1, font=font, fill=textcolor)
-    printC("Line 1: " + line1)
-    imagedraw.text((dpifactor/50,imageresy/4), line2, font=font, fill=textcolor)
-    printC("Line 2: " + line2)
-    imagedraw.text((dpifactor/50,imageresy/2), line3, font=font, fill=textcolor)
-    printC("Line 3: " + line3)
-    imagedraw.text((dpifactor/50,3*imageresy/4), line4, font=font, fill=textcolor)
-    printC("Line 4: " + line4)
-    
-    
-    return image, alttext, tilesX, tilesY
+    if line1 and line2 and line3 and line4 and alttext:
+        font = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 15*round(dpifactor/50))
+        imagedraw.text((dpifactor/50,0), line1, font=font, fill=textcolor)
+        printC("Line 1: " + line1)
+        imagedraw.text((dpifactor/50,imageresy/4), line2, font=font, fill=textcolor)
+        printC("Line 2: " + line2)
+        imagedraw.text((dpifactor/50,imageresy/2), line3, font=font, fill=textcolor)
+        printC("Line 3: " + line3)
+        imagedraw.text((dpifactor/50,3*imageresy/4), line4, font=font, fill=textcolor)
+        printC("Line 4: " + line4)
+
+        return image, alttext, tilesX, tilesY
+    else:
+        printC("No data! Sending null data.", "red")
+        return None, None, None, None
 
 
 
@@ -112,22 +116,28 @@ def GetCard():
             COLORS.append((int(line[0:3]), int(line[4:7]), int(line[8:11])))
             printC("Added color " + line[0:3] + " " + line[4:7] + " " + line[8:11] + "!")
 
-
     # Generate card...
     printC("Starting card generation...", "blue")
     image, alttext, tilesX, tilesY = GenerateCard() # Calls the above function to get data
-    printC("Finished generating card!...", "green")
     
-    
-    # Setup output location
-    outputLocation = SMARTFRAMEFOLDER + "/Cards/" + sourcename + ".png"
-    printC("Will output to " + outputLocation, "cyan")
-    
-    # Save
-    image.save(outputLocation)
-    printC("Image saved to  " + outputLocation + "!", "green")
-    
-    return Card(outputLocation, alttext, sourcename, tilesX, tilesY)
+    # Check if card exists
+    if image and alttext and tilesX and tilesY:
+        printC("Finished generating card!...", "green")
+        
+        
+        # Setup output location
+        outputLocation = SMARTFRAMEFOLDER + "/Cards/" + sourcename + ".png"
+        printC("Will output to " + outputLocation, "cyan")
+        
+        # Save
+        image.save(outputLocation)
+        printC("Image saved to  " + outputLocation + "!", "green")
+        
+        return Card(outputLocation, alttext, sourcename, tilesX, tilesY)
+    else:
+        # No cards
+        printC("No cards to return!...", "red")
+        return None
     
 def printC(string, color = "white"):
     from termcolor import colored
