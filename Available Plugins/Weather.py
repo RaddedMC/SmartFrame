@@ -108,7 +108,7 @@ def GetCardData():
     # -- Sets lines to use certain units depending on specified unit system -- #
     if unit == "metric":
         line2 = str(round(temperature)) + chr(176) + "C"
-        line4 = "Wind: " + str(wind_speed) + " km/h " + wind_dir 
+        line4 = "Wind: " + str(wind_speed*3.6) + " km/h " + wind_dir # Edit by RaddedMC: OpenWeatherMap's API defaults to m/s, converting to km/h
         alttext = "The temperature is " + str(temperature) + chr(176) + "C. The weather condition: " + weather_condition
     else:
         line2 = str(round(temperature)) + chr(176) + "F"
