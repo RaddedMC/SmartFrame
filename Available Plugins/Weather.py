@@ -115,7 +115,7 @@ def GetCardData():
         line4 = "Wind: " + str(wind_speed) + " mph " + wind_dir 
         alttext = "The temperature is " + str(temperature) + chr(176) + "F. The weather condition: " + weather_condition
 
-    line3 = str(weather_condition)
+    line3 = str(weather_condition).title()
 
     return line1, line2, line3, line4, alttext
 
