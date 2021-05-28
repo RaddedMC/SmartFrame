@@ -63,6 +63,7 @@ def GetCardData():
             printC("Cannot fetch CSV from data.ontario.ca. Returning last-fetched data to card.", "red")
             cases = cases()
             count = int(cases[-1])
+            # -- Add future logic here: If cannot fetch data AND if there isn't an existing csv file -- #
             maintext = "New Ontario COVID Cases Today"
             alttext = "There are " + str(count) + " cases of COVID-19 in Ontario today."
 
@@ -74,6 +75,7 @@ def GetCardData():
         except: # -- If there's no csv file present -- #
             printC("No ontario_covid.csv file is found! Downloading one right now...", "yellow")
             get_write_data(ontario_csv_url)
+            printC("Fetched the CSV.", "green")
             cases = cases()
             count = int(cases[-1])
 
