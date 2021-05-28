@@ -4,7 +4,7 @@
 # Ontario COVID data from the Government of Ontario.
 # This particular template will let you show a single large number and some small text with a fancy background.
 
-# Required deps for NewCasesOntarioCovid: Pillow, termcolor, requests.
+# Required deps for NewCasesOntarioCovid: Pillow, termcolor, requests, csv, datetime
 
 # No need to define any user variables! It just works (hopefully). 
 
