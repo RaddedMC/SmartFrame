@@ -20,7 +20,7 @@
 # KEY FILES: config.cfg
 #            Plugins/
 
-builddate = "2021 - 05 - 22"
+builddate = "2021 - 05 - 28"
 
 # Imports
 import os, time
@@ -121,11 +121,11 @@ def Title():
     print("By RaddedMC https://github.com/RaddedMC | https://youtube.com/RaddedMC | https://reddit.com/u/RaddedMC")
     print("      with help from BOX OF COOL PEEPS (https://discord.gg/9Ms4bFw)")
     time.sleep(0.5)
-    print(("{0:>"+str(widthlimit)+"}").format("@Cannoli -- Plugin design and Linux testing"))
+    print(("{0:>"+str(widthlimit)+"}").format("@Cannoli -- Plugin development and Linux testing"))
     time.sleep(0.1)
-    print(("{0:>"+str(widthlimit)+"}").format("@Volvo  -- General cringe"))
+    print(("{0:>"+str(widthlimit)+"}").format("@Volvo  -- Literature writing, General cringe, and Linux testing"))
     time.sleep(0.1)
-    print(("{0:>"+str(widthlimit)+"}").format("@Friendly Fire Entertainment  -- Advice for SmartFrame hardware"))
+    print(("{0:>"+str(widthlimit)+"}").format("@Friendly Fire Entertainment  -- Advice for RaddedMC's SmartFrame hardware"))
     time.sleep(0.1)
     print(builddate+"\n")
     time.sleep(1.5)

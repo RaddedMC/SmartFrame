@@ -8,8 +8,8 @@ You can use SmartFrame to send data to displays like a digital photo frame (http
 
 ## Community:
 Thanks to everyone who has helped my community and this project grow! Huge shoutouts to:
-* @Raminh05: Plugin Development and Linux testing
-* @kelvinhall05: General help / advice / hanging out
+* @Raminh05: Plugin development and Linux testing
+* @kelvinhall05: Literature writing, General cringe, and Linux testing
 * **Friendly Fire Entertainment**: Advice for the original SmartFrame hardware
 
 [Editor.md](https://pandao.github.io/editor.md/en.html "Editor.md") for making this readme file faster to make
