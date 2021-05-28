@@ -2,7 +2,7 @@
 # RaddedMC's YouTube Subscriber counter plugin for SmartFrame
 # Built using the SingleNumber template
 
-# Required deps: Pillow, termcolor, urllib, json
+# Required deps: Pillow, termcolor, urllib
 
 # This plugin will display the number of subscribers of a specific YouTube channel. You must supply a channel ID.
 

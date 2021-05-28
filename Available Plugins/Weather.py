@@ -4,7 +4,7 @@
 # Weather data is provided by OpenWeatherMap
 # This particular template lets you set 4 lines of text in a 2x2 card or 4x2 card.
 
-# Required deps for the weather plugin: Pillow, termcolor, requests, json
+# Required deps for the weather plugin: Pillow, termcolor, requests
 
 # Declare your variables here (e.g. location to get weather data for)
 sourcename = "Weather"
