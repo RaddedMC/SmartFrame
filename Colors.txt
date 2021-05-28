@@ -2,7 +2,7 @@
 200 200 200
 225 225 225
 100 100 125
-
+#
 # Color 1 = primary -- used for date text
 # Color 2 = secondary -- used for clock text
 # Color 3 = tertiary -- used for any extra text
