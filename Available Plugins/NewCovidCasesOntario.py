@@ -37,38 +37,49 @@ def GetCardData():
     # -- Fetches csv. -- #
     def get_write_data(ontario_csv_url):
         r = requests.get(ontario_csv_url)
-        with open("ontario_covid.csv", 'wb') as f:
+        with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'wb') as f:
             f.write(r.content)
             f.close()
 
     # -- Parses and returns case figures -- #
     def cases():
-        with open("ontario_covid.csv", 'r') as f:
+        with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
             data = list(reader(f))
             cases = [i[35] for i in data[7::]]
             f.close()
-            os.remove("ontario_covid.csv") # Deletes csv file after all data is extracted
             return cases
 
-   # -- Only run this plugin at 11 AM -- # # -- Edit the if-else out if you're running this program for the very first time to gather data. Then, put it back in if you don't want to download a csv every minute. -- #
+   # -- Only run this plugin at 11 AM -- #
     if time == "11:00":
         # -- Check if the program can obtain CSV file -- #
         try:
             get_write_data(ontario_csv_url) # Updates data on the csv file
+            printC("Fetched the CSV.", "green")
             cases = cases()
             count = int(cases[-1])
             maintext = "New Ontario COVID Cases Today"
-            alttext = "There are " + str(count) + " of COVID-19 in Ontario today."
+            alttext = "There are " + str(count) + " cases of COVID-19 in Ontario today."
         except:
-            printC("Cannot fetch CSV from data.ontario.ca. Returning null to card.", "red")
-            count = None
-            maintext = None
-            alttext = None
-    else:
-        printC("Not 11 AM yet. Sending null to card.", "red")
-        count = None
-        maintext = None
-        alttext = None
+            printC("Cannot fetch CSV from data.ontario.ca. Returning last-fetched data to card.", "red")
+            cases = cases()
+            count = int(cases[-1])
+            maintext = "New Ontario COVID Cases Today"
+            alttext = "There are " + str(count) + " cases of COVID-19 in Ontario today."
+
+    else: # -- If not 11:00 -- #
+        printC("Not 11 AM yet. No new data will be fetched.", "yellow")
+        try:
+            cases = cases()
+            count = int(cases[-1])
+        except: # -- If there's no csv file present -- #
+            printC("No ontario_covid.csv file is found! Downloading one right now...", "yellow")
+            get_write_data(ontario_csv_url)
+            cases = cases()
+            count = int(cases[-1])
+
+        maintext = "New Ontario COVID Cases Today"
+        alttext = "There are " + str(count) + " cases of COVID-19 in Ontario today."
+
 
     return count, maintext, alttext
 #### YOUR CODE HERE ####
