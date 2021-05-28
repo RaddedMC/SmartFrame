@@ -6,7 +6,7 @@
 
 # Required deps for NewCasesOntarioCovid: Pillow, termcolor, requests.
 
-# No need to define any user variables! It just works. Unless, you want to get rid of the time logic (see below).
+# No need to define any user variables! It just works (hopefully). 
 
 # Add any user-definable variables here! (API keys, usernames, etc.)
 sourcename = "NewCovidCasesOntario"
