@@ -4,9 +4,9 @@
 # Ontario COVID data from the Government of Ontario.
 # This particular template will let you show a single large number and some small text with a fancy background.
 
-# Required deps for NewCasesOntarioCovid: Pillow, termcolor, requests, datetime
+# Required deps for NewCasesOntarioCovid: Pillow, termcolor, requests, csv, datetime.
 
-# No need to define any user variables! It just works (hopefully). 
+# No need to define any user variables! It just works. Unless, you want to get rid of the time logic (see below).
 
 # Add any user-definable variables here! (API keys, usernames, etc.)
 sourcename = "NewCovidCasesOntario"
@@ -33,6 +33,7 @@ def GetCardData():
     ontario_csv_url = 'https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e6/resource/8a88fe6d-d8fb-41a3-9d04-f0550a44999f/download/daily_change_in_cases_by_phu.csv'
     now = datetime.now()
     time = now.strftime("%H:%M")
+    date = now.strftime("%Y-%m-%d")
 
     # -- Fetches csv. -- #
     def get_write_data(ontario_csv_url):
@@ -45,9 +46,18 @@ def GetCardData():
     def cases():
         with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
             data = list(reader(f))
-            cases = [i[35] for i in data[7::]]
+            cases = [i[35] for i in data[400::]]
             f.close()
             return cases
+
+    def dates():
+        with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
+            data = list(reader(f))
+            dates = [i[0] for i in data[400::]]
+            f.close()
+            csv_date = dates[-1]
+            return csv_date
+
 
    # -- Only run this plugin at 11 AM -- #
     if time == "11:00":
@@ -63,24 +73,31 @@ def GetCardData():
             printC("Cannot fetch CSV from data.ontario.ca. Returning last-fetched data to card.", "red")
             cases = cases()
             count = int(cases[-1])
-            # -- Add future logic here: If cannot fetch data AND if there isn't an existing csv file -- #
             maintext = "New Ontario COVID Cases Today"
             alttext = "There are " + str(count) + " cases of COVID-19 in Ontario today."
 
-    else: # -- If not 11:00 -- #
-        printC("Not 11 AM yet. No new data will be fetched.", "yellow")
+    else: # -- If not 11:00AM -- #
+        printC("Not 11 AM yet. Looking to see if you have the most current COVID data...", "yellow")
         try:
-            cases = cases()
-            count = int(cases[-1])
+            csv_date = dates() # Fetches latest date from the csv. Fails if no csv -> except below
+            if date != csv_date: # If not 11 AM but csv is out of date (!= to irl date), update.
+                printC("You do not have the latest COVID-data. Updating data now...", "yellow")
+                get_write_data(ontario_csv_url)
+                cases = cases()
+                count = int(cases[-1])
+                printC("Sucessfully fetched new data!", "green")
+            else:
+                printC("Your COVID data is up-to-date. Returning that to the card.", "green")
+                cases = cases()
+                count = int(cases[-1])
         except: # -- If there's no csv file present -- #
             printC("No ontario_covid.csv file is found! Downloading one right now...", "yellow")
             get_write_data(ontario_csv_url)
-            printC("Fetched the CSV.", "green")
             cases = cases()
             count = int(cases[-1])
 
-        maintext = "New Ontario COVID Cases Today"
-        alttext = "There are " + str(count) + " cases of COVID-19 in Ontario today."
+        maintext = "New Ontario COVID\n    Cases Today" # Spaces to fix centering
+        alttext = "There are " + str(count) + " new cases of COVID-19 in Ontario today."
 
 
     return count, maintext, alttext
@@ -105,7 +122,7 @@ def GenerateCard():
     count, maintext, alttext = GetCardData()
 
     if maintext and alttext:
-        maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 6*round(dpifactor/50))
+        maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 10*round(dpifactor/50))
         if count < 10: # Don't worry i hate this too
             counttextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 50*round(dpifactor/50))
         elif count < 20:
@@ -158,7 +175,7 @@ def GenerateCard():
             ypos = (padding/2)+(size+padding)*row
             imagedraw.ellipse((xpos, ypos, xpos+size, ypos+size), fill=circlesbgcolor)
 
-        imagedraw.text((dpifactor/50,3*imageresy/4), maintext, font=maintextfont, fill=textcolor)
+        imagedraw.text((dpifactor/50,3*imageresy/5), maintext, font=maintextfont, fill=textcolor)
         imagedraw.text((counttextstart, counttexttop), str(count), font=counttextfont, fill=textcolor) # Counter text
     else:
         printC("No data! Sending null data.", "red")
