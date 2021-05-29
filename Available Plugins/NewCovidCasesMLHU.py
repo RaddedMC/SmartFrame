@@ -4,7 +4,7 @@
 # Middlesex-London COVID data from the Middlesex-London Health Unit.
 # This particular template will let you show a single large number and some small text with a fancy background.
 
-# Required deps for NewCasesOntarioCovid: Pillow, termcolor, requests, datetime, openpyxl.
+# Required deps for NewCasesMLHUCovid: Pillow, termcolor, requests, datetime, openpyxl.
 
 # No need to define any user variables! It just works. 
 
