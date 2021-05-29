@@ -67,15 +67,11 @@ def GetCardData():
             printC("Fetched the CSV.", "green")
             cases = cases()
             count = int(cases[-1])
-            maintext = "New Ontario COVID Cases Today"
-            alttext = "There are " + str(count) + " cases of COVID-19 in Ontario today."
         except:
             printC("Cannot fetch CSV from data.ontario.ca. Returning last-fetched data to card.", "red")
             cases = cases()
             count = int(cases[-1])
-            maintext = "New Ontario COVID Cases Today"
-            alttext = "There are " + str(count) + " cases of COVID-19 in Ontario today."
-
+            
     else: # -- If not 11:00AM -- #
         printC("Not 11 AM yet. Looking to see if you have the most current COVID data...", "yellow")
         try:
