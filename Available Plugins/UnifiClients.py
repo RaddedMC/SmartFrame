@@ -6,6 +6,9 @@
 
 # Required deps: Pillow, termcolor, unificontrol
 
+# Setup: Set the below variables to the IP of your controller, the port if you have changed it, and your login information.
+# I know storing logins in plaintext is stupid. If more interest arises I will change this!
+
 # Add any user-definable variables here! (API keys, usernames, etc.)
 
 sourcename = "Unifi Controller"
