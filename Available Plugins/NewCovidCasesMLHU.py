@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- NewCovidCasesMLHU.py by @Raminh05
 # This is a plugin to display daily new covid cases in the region of Middlesex-London, Ontario, Canada.
 # Middlesex-London COVID data from the Middlesex-London Health Unit.

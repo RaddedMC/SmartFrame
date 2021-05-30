@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- FullCustomTemplate.py
 # This is a plugin template for SmartFrame v2.
 # This particular template is fully custom -- you can set your output to whatever image or tile size you'd like.

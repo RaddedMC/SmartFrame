@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- SmallText.py
 # This is a plugin template for SmartFrame v2.
 # This particular template lets you set 4 lines of text in a 2x2 card or 4x2 card.

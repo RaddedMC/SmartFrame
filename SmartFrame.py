@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- SmartFrame.py
 # This program is the primary wrapper for SmartFrame v2!
 

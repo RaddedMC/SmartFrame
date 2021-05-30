@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- 1UnitImage.py
 # This is a plugin template for SmartFrame v2.
 # This particular template lets you display an icon and a custom background.

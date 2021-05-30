@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's Wifi Status icon for SmartFrame -- 1WifiStatus.py
 # This is a simple icon that gets wifi signal status.
 

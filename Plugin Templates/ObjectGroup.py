@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- ObjectGroup.py
 # This is a plugin template for SmartFrame v2.
 # This template lets you create and display groups of items, useful for smart lights or sonos/Chromecast plugins.

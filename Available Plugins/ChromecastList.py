@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's ChromecastList plugin for SmartFrame
 # Built using the SmallText template.
 

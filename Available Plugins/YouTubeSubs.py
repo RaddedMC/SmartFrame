@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's YouTube Subscriber counter plugin for SmartFrame
 # Built using the SingleNumber template
 

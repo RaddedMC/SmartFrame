@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's Philips Hue plugin for SmartFrame -- Philips Hue.py
 # This plugin gets the state of your Philips Hue smart lights.
 

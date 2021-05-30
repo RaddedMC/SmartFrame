@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's Unifi plugin for SmartFrame -- UnifiClients.py
 
 # For users of Ubiquiti Unifi, this plugin will show the number of clients connected to your network through your controller.

@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- Weather.py by @Raminh05
 # This is the weather plugin for SmartFrame v2. 
 # Weather data is provided by OpenWeatherMap

@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- SingleNumber.py
 # This is a plugin template for SmartFrame v2.
 # This particular template will let you show a single large number and some small text with a fancy background.

@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- NewCovidCasesOntario.py by @Raminh05
 # This is a plugin to display daily new covid cases in the province of Ontario, Canada
 # Ontario COVID data from the Government of Ontario.

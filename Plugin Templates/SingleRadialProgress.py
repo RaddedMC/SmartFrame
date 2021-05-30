@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- FullCustomTemplate.py
 # This is a plugin template for SmartFrame v2.
 # This particular template will let you set a percentage value to be rendered into a circle and some text.
