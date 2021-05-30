@@ -7,7 +7,7 @@
 
 # No setup is required other than installing dependencies.
 
-sourcename = "Set your card's default sourcename here"
+sourcename = "Wifi Status"
 
 from PIL import Image, ImageFont, ImageDraw
 import os
