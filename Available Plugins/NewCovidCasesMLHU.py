@@ -1,10 +1,10 @@
 #!/bin/python3
-# RaddedMC's SmartFrame v2 -- NewCovidCasesOntario.py by @Raminh05
+# RaddedMC's SmartFrame v2 -- NewCovidCasesMLHU.py by @Raminh05
 # This is a plugin to display daily new covid cases in the region of Middlesex-London, Ontario, Canada.
 # Middlesex-London COVID data from the Middlesex-London Health Unit.
 # This particular template will let you show a single large number and some small text with a fancy background.
 
-# Required deps for NewCasesOntarioCovid: Pillow, termcolor, requests, datetime, openpyxl.
+# Required deps for NewCasesMLHUCovid: Pillow, termcolor, requests, datetime, openpyxl.
 
 # No need to define any user variables! It just works. 
 
@@ -69,14 +69,17 @@ def GetCardData():
         printC("Not 3PM yet. Looking to see if you have the most current COVID data...", "yellow")
         try:
             xlsx_date = parse_response()[0].strftime("%Y-%m-%d") # Fetches latest date from the xlsx. Fails if no xlsx -> except below
+            
             if date != xlsx_date: # If not 3PM but xlsx is out of date (!= to irl date), update.
                 printC("You do not have the latest COVID-data. Updating data now...", "yellow")
                 get_response(excel_url)
                 count = parse_response()[1]
+               
                 if date != xlsx_date: # Checks again if up-to-date
                     printC("MLHU has not updated their data yet!", "yellow")
                 else:
                     printC("Sucessfully fetched new data!", "green")
+                    
             else:
                 printC("Your COVID data is up-to-date. Returning that to the card.", "green")
                 count = parse_response()[1]
@@ -86,7 +89,7 @@ def GetCardData():
             count = parse_response()[1]
 
         maintext = "New\nMiddlesex-London\nCOVID Cases Today" # Spaces to fix centering
-        alttext = "There are " + str(count) + " new cases of COVID-19 in Ontario today."
+        alttext = "There are " + str(count) + " new cases of COVID-19 in the Middlesex Region today."
 
     return count, maintext, alttext
 #### YOUR CODE HERE ####
