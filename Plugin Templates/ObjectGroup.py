@@ -41,6 +41,7 @@ def GetCardData():
         fullImagePath = file + "/" + folder + "/" + file # File location of image
         return fullImagePath
     
+    groupList = []
     # Example code:
     #groupList = [Group("O Canada!", [Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,0,0), bgFillAmt=0.5), Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,255,255), bgFillAmt=0.5), Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,255,255), bgFillAmt=0.5), Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,255,255), bgFillAmt=0.5), Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,0,0), bgFillAmt=0.5)]),
     #            Group("Our home and\nnative land!", [Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,0,0), bgFillAmt=0.5), Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,255,255), bgFillAmt=0.5), Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,255,255), bgFillAmt=0.5), Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,255,255), bgFillAmt=0.5), Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,0,0), bgFillAmt=0.5)]),
