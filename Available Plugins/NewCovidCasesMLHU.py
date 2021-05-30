@@ -1,10 +1,10 @@
 #!/bin/python3
-# RaddedMC's SmartFrame v2 -- NewCovidCasesMLHU.py by @Raminh05
+# RaddedMC's SmartFrame v2 -- NewCovidCasesOntario.py by @Raminh05
 # This is a plugin to display daily new covid cases in the region of Middlesex-London, Ontario, Canada.
 # Middlesex-London COVID data from the Middlesex-London Health Unit.
 # This particular template will let you show a single large number and some small text with a fancy background.
 
-# Required deps for NewCasesMLHUCovid: Pillow, termcolor, requests, datetime, openpyxl.
+# Required deps for NewCasesOntarioCovid: Pillow, termcolor, requests, datetime, openpyxl.
 
 # No need to define any user variables! It just works. 
 
@@ -28,18 +28,18 @@ def GetCardData():
     # -- Import modules -- #
     import requests
     from openpyxl import load_workbook
-    from datetime import datetime
+    from datetime import datetime, timedelta
 
     # Fetches excel file from MLHU
     def get_response(excel_url):
         response = requests.get(excel_url)
 
         if response.status_code == 404: # If the plugin fails to get data
-            printC("Failed to fetch excel file. Sending null to card.", "red")
-            count = None
-            maintext = None
-            alttext = None
-            raise NameError("MLHU has not updated the excel file for today.") # Crashes the plugin
+            printC("MLHU has not updated the excel file for today. Falling back to yesterday's report.", "yellow")
+            yesterday = datetime.now() - timedelta(1)
+            date = yesterday.strftime("%Y-%m-%d")
+            get_response("https://www.healthunit.com/uploads/summary_of_covid-19_cases_in_middlesex-london_" + date + ".xlsx")
+
         else:
             printC("Sucessfully fetched excel file.", "green")
             with open("london_covid.xlsx", 'wb') as f:
@@ -69,11 +69,14 @@ def GetCardData():
         printC("Not 3PM yet. Looking to see if you have the most current COVID data...", "yellow")
         try:
             xlsx_date = parse_response()[0].strftime("%Y-%m-%d") # Fetches latest date from the xlsx. Fails if no xlsx -> except below
-            if date != xlsx_date: # If not 11 AM but xlsx is out of date (!= to irl date), update.
+            if date != xlsx_date: # If not 3PM but xlsx is out of date (!= to irl date), update.
                 printC("You do not have the latest COVID-data. Updating data now...", "yellow")
                 get_response(excel_url)
                 count = parse_response()[1]
-                printC("Sucessfully fetched new data!", "green")
+                if date != xlsx_date: # Checks again if up-to-date
+                    printC("MLHU has not updated their data yet!", "yellow")
+                else:
+                    printC("Sucessfully fetched new data!", "green")
             else:
                 printC("Your COVID data is up-to-date. Returning that to the card.", "green")
                 count = parse_response()[1]
