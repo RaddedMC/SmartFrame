@@ -130,7 +130,7 @@ class Item:
         
         # This background changes height based on the fill amount. Useful for smart light brightness or speaker volume.
         imagedraw.rounded_rectangle([(0,0),(xyres,xyres)], fill=(255,255,255,100), radius=cornerrad) # BG
-        imagedraw.rounded_rectangle([(0,xyres*(1-self.bgFillAmt)),(xyres,xyres)], fill=self.bgColor, radius=cornerrad) # FG
+        imagedraw.rounded_rectangle([(0,round(xyres*(1-self.bgFillAmt))),(xyres,xyres)], fill=(round(self.bgColor[0]), round(self.bgColor[0]), round(self.bgColor[0])), radius=round(cornerrad)) # FG
         
         # Overlay the icon
         icon = Image.open(self.iconLocation)
