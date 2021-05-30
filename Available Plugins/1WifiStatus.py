@@ -47,19 +47,23 @@ def GetCardData():
         if wifiStrength >= 0 and wifiStrength <= 25:
             # LOW
             imagePath += "/wifi-low.png"
-            printC("Wifi Strength is low!")
+            alttext = "Wifi Strength is low!"
+            printC(alttext)
         elif wifiStrength > 25 and wifiStrength <= 50:
             # MEDIUM
             imagePath += "/wifi-medium.png"
-            printC("Wifi Strength is medium!")
+            alttext = "Wifi Strength is medium!"
+            printC(alttext)
         elif wifiStrength > 50 and wifiStrength <= 75:
             # HIGH
             imagePath += "/wifi-semifull.png"
-            printC("Wifi Strength is high!")
+            alttext = "Wifi Strength is high!"
+            printC(alttext)
         else:
             # HIGHEST
             imagePath += "/wifi-full.png"
-            printC("Wifi Strength is highest!")
+            alttext = "Wifi Strength is highest!"
+            printC(alttext)
     
     file = __file__.replace('\\', '/') # Remove this if you use a specific file path for your image or some other method.
     index = file.rfind("/")
