@@ -63,7 +63,7 @@ def GenerateCard():
         imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=background)
         icon = Image.open(imageFile)
         icon = icon.resize((round(imageresx-(dpifactor/12)), round(imageresy-(dpifactor/12))))
-        image.paste(icon, (round(dpifactor/25), round(dpifactor/25)))
+        image.paste(icon, (round(dpifactor/25), round(dpifactor/25)), mask=icon)
     else:
         printC("No data! Sending null data.", "red")
         return None, None, None, None
