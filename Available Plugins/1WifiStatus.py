@@ -19,6 +19,8 @@ from pywifi import const
 SMARTFRAMEFOLDER = ""
 COLORS = []
 
+interfaceoverride = 0 # If your device is weird and wifi isn't the first interface listed
+
 #### YOUR CODE HERE ####
 def GetCardData():
     imagePath = "1WifiStatus Icons" # File within same folder as plugin (I recommend creating a subfolder with assets related to your plugin
@@ -27,7 +29,7 @@ def GetCardData():
     alttext = "Whatever you want!"
     
     wifi = pywifi.PyWiFi()
-    iface = wifi.interfaces()[0]
+    iface = wifi.interfaces()[interfaceoverride]
     if iface.status() is not const.IFACE_CONNECTED:
         # Wifi is not connected
         printC("No wifi! Either you're using ethernet or are offline.", "red")
