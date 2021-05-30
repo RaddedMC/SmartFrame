@@ -7,7 +7,7 @@
 
 # DEVELOPER INSTRUCTIONS:
 # Assume you have root priveleges.
-# Use the variables in GenerateCard() to change the tile size and pixel density of your Card.
+# Use the variables in GetCardData() to change the tile size and pixel density of your Card.
 # If you need additional files, place them into a folder of the same name as your plugin.
 # Use the global variable SMARTFRAMEFOLDER for a string with the location of the SmartFrame folder.
 # For debug/overflow purposes, make sure you set alttext to something that accurately represents your collected data.
