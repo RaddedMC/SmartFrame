@@ -25,7 +25,6 @@ def GetCardData():
         index = file.rfind("/")
         file = file[:index]
         fullImagePath = file + "/" + folder + "/" + fileWithin # File location of image
-        print(fullImagePath)
         return fullImagePath
     
     groupList = []
@@ -53,7 +52,10 @@ def GetCardData():
         lightlist = []
         # For every light that's on
         for light in group.lights:
-            if light.on:
+            if not light.reachable:
+                printC("The " + light.name + " is not reachable.", "yellow")
+                lightlist.append(Item(light.name, GetPathWithinNeighbouringFolder("light.png", "Philips Hue"), (125,0,0), 1))
+            elif light.on:
                 try:
                     hue = light.hue
                     saturation = light.saturation
@@ -159,7 +161,7 @@ class Item:
         
         # This background changes height based on the fill amount. Useful for smart light brightness or speaker volume.
         imagedraw.rounded_rectangle([(0,0),(xyres,xyres)], fill=(255,255,255,100), radius=cornerrad) # BG
-        imagedraw.rounded_rectangle([(0,round(xyres*(1-self.bgFillAmt))),(xyres,xyres)], fill=(round(self.bgColor[0]), round(self.bgColor[0]), round(self.bgColor[0])), radius=round(cornerrad)) # FG
+        imagedraw.rounded_rectangle([(0,round(xyres*(1-self.bgFillAmt))),(xyres,xyres)], fill=(round(self.bgColor[0]), round(self.bgColor[1]), round(self.bgColor[2])), radius=round(cornerrad)) # FG
         
         # Overlay the icon
         icon = Image.open(self.iconLocation)
