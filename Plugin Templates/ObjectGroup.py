@@ -38,7 +38,7 @@ def GetCardData():
         file = __file__.replace('\\', '/') # Remove this if you use a specific file path for your image or some other method.
         index = file.rfind("/")
         file = file[:index]
-        fullImagePath = file + "/" + folder + "/" + file # File location of image
+        fullImagePath = file + "/" + folder + "/" + fileWithin # File location of image
         return fullImagePath
     
     groupList = []
