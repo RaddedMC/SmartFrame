@@ -24,8 +24,8 @@ COLORS = []
 
 controllerHostname = "192.168.1.41" # IP address or hostname of your controller
 controllerPort = 8443 # Leave if you don't know this
-username = "RaddedMC"
-password = "btw1controlth3net"
+username = ""
+password = ""
 
 #### YOUR CODE HERE ####
 def GetCardData():
