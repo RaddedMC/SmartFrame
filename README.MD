@@ -6,7 +6,7 @@ You can use SmartFrame to send data to displays like a [digital photo frame](htt
 
 Please note that while this project is functional, it is still a work in progress. More features and plugins are being worked on daily!
 
-**IF YOU ARE INTERESTED IN MAKING A PLUGIN,** scroll to the bottom of this readme for more information. If you find any bugs, have suggested changes, or developed a plugin, feel free to make a pull request or contact me via any of the methods listed below.
+**If you are interested in making a plugin,** check out the [plugin development](https://github.com/RaddedMC/SmartFrame/wiki/Plugin-development) wiki page. If you find any bugs, have suggested changes, or developed a plugin, feel free to make a pull request or contact us via any of the methods listed below.
 
 ------------
 
