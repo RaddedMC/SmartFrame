@@ -41,10 +41,10 @@ def GetCardData():
         printC("There are " + str(count) + " clients on the network.")
         for site in client.list_sites():
             if site['name'] == "default":
-                maintext = site['desc'] + " " + " devices"
+                maintext = site['desc'] + "\n" + " devices"
                 printC("The site name is " + site['desc'])
                 break
-            maintext = "Unifi devices"
+            maintext = "Unifi\ndevices"
         
         alttext = "There are " + str(count) + " devices on your network."
     except:
@@ -129,7 +129,7 @@ def GenerateCard():
             ypos = (padding/2)+(size+padding)*row
             imagedraw.ellipse((xpos, ypos, xpos+size, ypos+size), fill=circlesbgcolor)
         
-        imagedraw.text((dpifactor/50,3*imageresy/4), maintext, font=maintextfont, fill=textcolor)
+        imagedraw.text((dpifactor/50,5*imageresy/8), maintext, font=maintextfont, fill=textcolor)
         imagedraw.text((counttextstart, counttexttop), str(count), font=counttextfont, fill=textcolor) # Counter text
     else:
         printC("No data! Sending null data.", "red")

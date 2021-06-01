@@ -116,7 +116,7 @@ def GenerateCard():
             ypos = (padding/2)+(size+padding)*row
             imagedraw.ellipse((xpos, ypos, xpos+size, ypos+size), fill=circlesbgcolor)
         
-        imagedraw.text((dpifactor/50,3*imageresy/4), maintext, font=maintextfont, fill=textcolor)
+        imagedraw.text((dpifactor/50,5*imageresy/8), maintext, font=maintextfont, fill=textcolor)
         imagedraw.text((counttextstart, counttexttop), str(count), font=counttextfont, fill=textcolor) # Counter text
     else:
         printC("No data! Sending null data.", "red")
