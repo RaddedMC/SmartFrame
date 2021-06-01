@@ -22,10 +22,10 @@ import unificontrol
 SMARTFRAMEFOLDER = ""
 COLORS = []
 
-controllerHostname = "192.168.1.20" # IP address or hostname of your controller
+controllerHostname = "192.168.1.41" # IP address or hostname of your controller
 controllerPort = 8443 # Leave if you don't know this
-username = ""
-password = ""
+username = "RaddedMC"
+password = "btw1controlth3net"
 
 #### YOUR CODE HERE ####
 def GetCardData():
@@ -41,7 +41,7 @@ def GetCardData():
         printC("There are " + str(count) + " clients on the network.")
         for site in client.list_sites():
             if site['name'] == "default":
-                maintext = site['desc'] + "\n" + " devices"
+                maintext = site['desc'] + "\n" + "devices"
                 printC("The site name is " + site['desc'])
                 break
             maintext = "Unifi\ndevices"
