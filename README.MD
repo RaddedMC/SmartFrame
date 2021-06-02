@@ -14,7 +14,7 @@ Please note that while this project is functional, it is still a work in progres
 
 Thanks to everyone who has contributed to this project! Huge shoutouts to:
 
-* [raminh05](https://github.com/raminh05): Plugin development and Linux testing
+* [Raminh05](https://github.com/raminh05): Plugin development and Linux testing
 * [kelvinhall05](https://github.com/kelvinhall05): Documentation, general cringe, Linux testing, Pinephone testing
 * [Friendly Fire Entertainment](https://www.youtube.com/channel/UCrzKIt8myceV5tN7tgB3oYA): Advice for the original SmartFrame hardware
 
