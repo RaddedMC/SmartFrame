@@ -1,22 +1,24 @@
 #!/usr/bin/python3
-# RaddedMC's SmartFrame v2 -- FullCustomTemplate.py
+# RaddedMC's SmartFrame v2 -- MediaPlayer.py
 # This is a plugin template for SmartFrame v2.
-# This particular template is fully custom -- you can set your output to whatever image or tile size you'd like.
+# This particular template is meant for media
+#it can display an album art and generates a nicely formatted Card with progress, song and artist names,
+#and other information.
 
 # Required deps: Pillow, termcolor, colorgram.py
 
 # DEVELOPER INSTRUCTIONS:
 # Assume you have root priveleges.
-# Use the variables in GenerateCard() to change the tile size and pixel density of your Card.
+# Use the variables in GetCardData() to change the tile size and pixel density of your Card.
 # If you need additional files, place them into a folder of the same name as your plugin.
-# The module will grab the user's colors before running your code. This will be located in COLORS
-# The user's font is located in SMARTFRAMEFOLDER + "/Fonts/font1.ttf".
-# Use the global variable SMARTFRAMEFOLDER for a string with the location of the SmartFrame folder.
+# Use GetPathWithinNeighbouringFolder to get the files from this folder.
+# Make sure that the image isn't too large! A large image can take a long time for weaker computers to process colors from.
+
+# Make sure to change the following variables:
+# sourcename, progress, songname, artistname, albumArtLocation, othertext, alttext.
+
 # For debug/overflow purposes, make sure you set alttext to something that accurately represents your collected data.
 # Use printC(text, color of text) if you need to print. 
-
-# Edit the PIL 'image' variable in GenerateCard in any way that you like! The end result of the variable will be what appears in SmartFrame.
-# If you return set all variables to None (ex, if data can't be found), SmartFrame will display nothing for this Card.
 
 # To test, just run your card in a terminal! The image will appear in your Smartframe/Cards folder. I recommend deleting this file before running SmartFrame again.
 # Note that if your plugin crashes, it will not take down the whole SmartFrame process. However, tracebacks will be outputted to the user.
@@ -47,7 +49,7 @@ def GetCardData():
     progress = 0.1 # Float between 0 and 1
     songname = "Megalovania"
     artistname = "Toby Fox"
-    albumArtLocation = GetPathWithinNeighbouringFolder("Undertale.png", "MediaPlayer")
+    albumArtLocation = GetPathWithinNeighbouringFolder("", "")
     othertext = "Your App Name\nStatus"
     alttext = "Whatever you want!"
     
@@ -55,6 +57,8 @@ def GetCardData():
     
     return progress, songname, artistname, albumArtLocation, othertext, alttext
 ### YOUR CODE HERE ###
+
+
 
 def GenerateCard():
     tilesX = 2 # Change this to change tile size
