@@ -311,10 +311,16 @@ def main():
     parser.add_argument('-c', action="store_true", help = "Asks for confirmation and clears the config file")
     parser.add_argument('-j', action="store_true", help = "Just parses data from plugins, useful for testing")
     args = parser.parse_args()
+    runonce = False
 
     # Config file clearer
     if args.c:
         ClearConfig()
+        
+    # Runs SmartFrame only once
+    if args.j:
+        printS("SmartFrame will run once and exit.", "magenta")
+        runonce = True
     
     # If the config file doesn't exist, make one!
     if not os.path.isfile('config.cfg'):
@@ -423,6 +429,10 @@ def main():
         sleepduration = (endTime - nowTime).total_seconds()
         #print(sleepduration)
         
+        if runonce:
+            printS("Finished! Exiting...", "green")
+            exit(0)
+
         printS("Sleeping for " + str(sleepduration) + " seconds...", "yellow")
         if sleepduration > 0:
             time.sleep(sleepduration)
