@@ -348,7 +348,7 @@ def main():
                 if file.endswith(".py"):
                     printS("Running plugin " + file, "yellow")
                     
-                    # Get modules
+                    # Get and run modules
                     import importlib.util
                     spec = importlib.util.spec_from_file_location("module.name", "Plugins/" + file)
                     plugin = importlib.util.module_from_spec(spec)
