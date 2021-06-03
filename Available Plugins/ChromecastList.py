@@ -63,8 +63,10 @@ def GetCardData():
 		chromecast.connect()
 		chromecast.wait()
 
+	idle_chromecasts = 0
 	for chromecast in chromecasts:
 		if chromecast.status.status_text == '':
+			printC("Idling chromecast detected...Will not display it.", "yellow")
 			continue
 		else:
 			itemList = []
