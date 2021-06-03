@@ -49,7 +49,7 @@ def GetCardData():
 		fullImagePath = file + "/" + folder + "/" + fileWithin # File location of image
 		return fullImagePath
 
-	progress = 0.1 # Float between 0 and 1
+	progress = 0.5 # Float between 0 and 1
 	songname = "Megalovania"
 	artistname = "Toby Fox"
 	albumArtLocation = GetPathWithinNeighbouringFolder("", "")
@@ -113,7 +113,11 @@ def GenerateCard():
 		imagedraw.text((padding, padding*2), songname, font=songtextfont, fill=songtextcolor) # Song name
 		imagedraw.text((padding, (padding*2)+round(dpifactor/4)), artistname, font=artisttextfont, fill=artisttextcolor) # Artist name
 		imagedraw.text((padding, imageresy-round(5*dpifactor/12)), othertext, font=othertextfont, fill=artisttextcolor) # App name
-		imagedraw.rounded_rectangle([(padding, round(2*imageresy/3)), (imageresx-padding, round(2*imageresy/3)+round(4*padding))], fill=(255,255,255,50), radius=round(dpifactor/5)) # Progress meter BG
+		overlay = Image.new("RGBA", (imageresx, imageresy))
+		overlayDraw = ImageDraw.Draw(overlay)
+		overlayDraw.rounded_rectangle([(padding, round(2*imageresy/3)), (imageresx-padding, round(2*imageresy/3)+round(4*padding))], fill=(255,255,255,50), radius=round(dpifactor/5)) # Progress meter BG
+		image = Image.alpha_composite(image, overlay)
+		imagedraw = ImageDraw.Draw(image)
 		if progress >= 0.1:
 			imagedraw.rounded_rectangle([(padding, round(2*imageresy/3)), (progress*(imageresx-padding), round(2*imageresy/3)+round(4*padding))], fill=progressbarcolor, radius=round(dpifactor/5)) # Progress meter FG
 		

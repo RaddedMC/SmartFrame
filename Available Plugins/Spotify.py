@@ -28,9 +28,9 @@ from spotipy.oauth2 import SpotifyOAuth
 SMARTFRAMEFOLDER = ""
 COLORS = []
 
-spotifyUsername = "RaddedMC"
-spotifyClientID = "4497e0f22865451082ea54a17ad66567" # Get yours at https://developer.spotify.com/dashboard
-spotifyClientSecret = "d47d1c45f5344172aea394020c8966a8"
+spotifyUsername = ""
+spotifyClientID = "" # Get yours at https://developer.spotify.com/dashboard
+spotifyClientSecret = ""
 redirect_uri = "http://127.0.0.1:9090" # Set this to your URI in the Spotify dashboard
 
 ### YOUR CODE HERE ###
@@ -153,14 +153,6 @@ def GenerateCard():
 			albumart = Image.open(albumArtLocation)
 			albumart = albumart.resize((imageresx, imageresy))
 			image.paste(albumart, (0, 0))
-			import os
-			try:
-				os.remove(albumArtLocation)
-				printC("Removed downloaded album art!")
-			except:
-				printC("Failed to remove downloaded album art!", "red")
-				import traceback
-				traceback.print_exc()
 			
 			# Background darken overlay thing
 			overlay = Image.new("RGBA", (imageresx, imageresy))
@@ -180,7 +172,11 @@ def GenerateCard():
 		imagedraw.text((padding, padding*2), songname, font=songtextfont, fill=songtextcolor) # Song name
 		imagedraw.text((padding, (padding*2)+round(dpifactor/4)), artistname, font=artisttextfont, fill=artisttextcolor) # Artist name
 		imagedraw.text((padding, imageresy-round(5*dpifactor/12)), othertext, font=othertextfont, fill=artisttextcolor) # App name
-		imagedraw.rounded_rectangle([(padding, round(2*imageresy/3)), (imageresx-padding, round(2*imageresy/3)+round(4*padding))], fill=(255,255,255,50), radius=round(dpifactor/5)) # Progress meter BG
+		overlay = Image.new("RGBA", (imageresx, imageresy))
+		overlayDraw = ImageDraw.Draw(overlay)
+		overlayDraw.rounded_rectangle([(padding, round(2*imageresy/3)), (imageresx-padding, round(2*imageresy/3)+round(4*padding))], fill=(255,255,255,50), radius=round(dpifactor/5)) # Progress meter BG
+		image = Image.alpha_composite(image, overlay)
+		imagedraw = ImageDraw.Draw(image)
 		if progress >= 0.1:
 			imagedraw.rounded_rectangle([(padding, round(2*imageresy/3)), (progress*(imageresx-padding), round(2*imageresy/3)+round(4*padding))], fill=progressbarcolor, radius=round(dpifactor/5)) # Progress meter FG
 		
