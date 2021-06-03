@@ -100,7 +100,7 @@ def GetCardData():
 			groupList.append(Group(friendly_name + " | " + display_name + "\n" + media_title, itemList))
 			printC("Sucessfully fetched all data from the cast device!", "green")
 
-	maintext = str(len(chromecasts)) + " Chromecasts\nDetected"
+	maintext = str(len(chromecasts)) + " Chromecasts Detected"
 	alttext = "Whatever you want!"
 
 	# YOUR CODE HERE! Good luck, soldier.
