@@ -8,7 +8,7 @@
 # No need to define any user variables! It just works. 
 
 # Add any user-definable variables here! (API keys, usernames, etc.)
-sourcename = "NewCasesCasesMLHU"
+sourcename = "NewCOVIDCasesMLHU"
 
 from PIL import Image, ImageFont, ImageDraw
 import os
