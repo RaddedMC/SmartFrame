@@ -227,8 +227,6 @@ from ErrorLogger import logError
 ### SmartFrame.py calls this to get a card. I don't recommend editing this.
 def GetCard():
 
-	GetPresets()
-
 	# Generate card...
 	printC("Starting card generation...", "blue")
 	image, alttext, tilesX, tilesY = GenerateCard() # Calls the above function to get data
