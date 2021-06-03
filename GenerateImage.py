@@ -8,7 +8,7 @@
 
 # printG() -- just a simple output formatter
 
-# Required deps: Pillow, Card, termcolor, pandas
+# Required deps: Pillow, Card, termcolor
 # KEY FILES: Fonts/font1.ttf
 #            Colors.txt
 
@@ -25,9 +25,9 @@ def GenerateImage(cardsinstance, resx, resy, scale):
         from PIL import Image, ImageFont, ImageDraw
         from Card import Card
         from time import gmtime, strftime
-        from pandas import DataFrame
         import os
         import math
+		
         
         # PRINT COLORS:
         # Blue = doing something -- header
@@ -143,7 +143,7 @@ def GenerateImage(cardsinstance, resx, resy, scale):
                         for cardy in range(y, y+currentcard.tilesy):
                             for cardx in range(x, x+currentcard.tilesx):
                                 cardarray[cardy][cardx] = True
-                        print(DataFrame(cardarray)) # Debug
+                        print(str(cardarray)) # Debug
                         
                         # place card!
                         printG("Placing card " + currentcard.sourcename + " at " + currentcardrange + "...", "blue")
