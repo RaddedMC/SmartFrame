@@ -63,8 +63,10 @@ def GetCardData():
 		chromecast.connect()
 		chromecast.wait()
 
+	idle_chromecasts = 0
 	for chromecast in chromecasts:
 		if chromecast.status.status_text == '':
+			printC("Idling chromecast detected...Will not display it.", "yellow")
 			continue
 		else:
 			itemList = []
@@ -100,7 +102,7 @@ def GetCardData():
 			groupList.append(Group(friendly_name + " | " + display_name + "\n" + media_title, itemList))
 			printC("Sucessfully fetched all data from the cast device!", "green")
 
-	maintext = str(len(chromecasts)) + " Chromecasts\nDetected"
+	maintext = str(len(chromecasts)) + " Chromecasts Detected"
 	alttext = "Whatever you want!"
 
 	# YOUR CODE HERE! Good luck, soldier.
