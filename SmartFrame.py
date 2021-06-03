@@ -352,13 +352,20 @@ def main():
                     import importlib.util
                     spec = importlib.util.spec_from_file_location("module.name", "Plugins/" + file)
                     plugin = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(plugin)
+                    
+                    try:
+                        spec.loader.exec_module(plugin)
+                    except:
+                        printS("There's a compiler error with plugin " + file + "! Contact the developer for this plugin or fix the error yourself and make a pull request.", "red")
+                        import traceback
+                        traceback.print_exc()
+                        continue
                     
                     # Run plugin
                     try:
                         plugincards = plugin.GetCard()
                     except:
-                        printS("Error with plugin " + file + "!", "red")
+                        printS("Runtime error with plugin " + file + "!", "red")
                         import traceback
                         traceback.print_exc()
                         continue
