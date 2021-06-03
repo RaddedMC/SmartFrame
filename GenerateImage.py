@@ -12,6 +12,8 @@
 # KEY FILES: Fonts/font1.ttf
 #            Colors.txt
 
+moduleName = "Image Generator"
+
 def printG(string, color = "white"):
 	from termcolor import colored
 	print("Image Generator | " + colored(str(string), color))
@@ -183,12 +185,11 @@ def GenerateImage(cardsinstance, resx, resy, scale):
 		printG("Image generated!", "green")
 		return mainimage
 	except KeyboardInterrupt:
-			print("Keyboard interrupt detected! Exiting...")
-			exit(0)
+		print("Keyboard interrupt detected! Exiting...")
+		exit(0)
 	except:
-		printG("There was an error!", "red")
 		import traceback
-		traceback.print_exc()
+		logError("There was an error!" + file + "!", traceback.format_exc(), moduleName)
 		return mainimage
 
 

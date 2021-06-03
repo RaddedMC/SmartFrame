@@ -369,7 +369,7 @@ def main():
 						plugincards = plugin.GetCard()
 					except:
 						import traceback
-						logError("Runtime error with plugin" + file + "!", traceback.format_exc(), moduleName)
+						logError("Runtime error with plugin " + file + "!", traceback.format_exc(), moduleName)
 						continue
 					
 					if isinstance(plugincards, list):
