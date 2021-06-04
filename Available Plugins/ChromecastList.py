@@ -48,6 +48,7 @@ def GetCardData():
 			icon_path = GetPathWithinNeighbouringFolder("gHome.png", "Chromecast Icons")
 		return icon_path
 
+	# -- Icon picker for player state -- #
 	def player_state_icon(player_state):
 		if player_state == 'PLAYING' or player_state == 'BUFFERING':
 			player_icon_path = GetPathWithinNeighbouringFolder("play_icon.png", "Chromecast Icons")
@@ -56,7 +57,8 @@ def GetCardData():
 		else:
 			player_icon_path = None
 		return player_icon_path
-	
+
+	# -- Function to connect to chromecasts -- #
 	def connect_chromecasts():
 		printC("Getting chromecasts...", "blue")
 		chromecasts, browser = pychromecast.get_chromecasts(timeout=5)
@@ -108,6 +110,8 @@ def GetCardData():
 
 			groupList.append(Group(friendly_name + " | " + display_name + "\n" + media_title, itemList))
 			printC("Sucessfully fetched all data from the cast device!", "green")
+
+			chromecast.disconnect()
 	
 	if groupList:
 		maintext = str(len(chromecasts)) + " Chromecasts Detected"
