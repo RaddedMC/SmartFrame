@@ -4,12 +4,13 @@
 # Weather data is provided by OpenWeatherMap
 # This particular template lets you set 4 lines of text in a 2x2 card or 4x2 card.
 
-# Required deps for the weather plugin: Pillow, termcolor, requests
+# Required deps for the weather plugin: Pillow, termcolor, requests, wget
 
 # Declare your variables here (e.g. location to get weather data for)
 sourcename = "Weather"
 
 owm_api_key = "825400b6f9c8ad02b637fa732cdce498" # up to 60 requests/minute. Feel free to use it for now. I might remove it in the futre. If that's the case, register for your own API key at OpenWeatherMap and replace this one with yours here!
+gmaps_api_key = "" # 
 city = "" # Your city/town goes here!
 country_code = "" # Must be ISO 3166-2 code (Tip: Google the ISO 3166-2 for your country)
 unit = "" # metric or imperial only (is cap-sensitive, default is set to metric) (e.g. unit = "metric")
@@ -20,6 +21,8 @@ import os
 import sys
 import requests # For Weather Plugin
 import json # For Weather Plugin
+import wget # For Image grabbing
+
 
 SMARTFRAMEFOLDER = ""
 COLORS = []
@@ -31,7 +34,9 @@ def GetCardData():
 	line3 = "Line 3"
 	line4 = "Line 4"
 	alttext = "Whatever you want!"
+	imagelocation = ""
 
+	#### Weatherdata ####
 	global unit
 # -- Checks if user entered a valid unit system -- #
 	if unit == "metric":
@@ -117,8 +122,29 @@ def GetCardData():
 		alttext = "The temperature is " + str(temperature) + chr(176) + "F. The weather condition: " + weather_condition
 
 	line3 = str(weather_condition).title()
+	
+	
+	
+	#### WeatherImage ####
+	printC("Attempting to download map bg image...", "blue")
+	if not gmaps_api_key == "":
+		try:
+			import urllib.parse
+			url = "https://maps.googleapis.com/maps/api/staticmap?key=" + urllib.parse.quote(gmaps_api_key)\
+			+ "&center=" + urllib.parse.quote(city + ", " + country_code)\
+			+ "&zoom=15" + "&format=png"\
+			+ "&maptype=roadmap"\
+			+ "&style=element:geometry%7Ccolor:0x0f1114&style=element:labels.icon%7Cvisibility:off&style=element:labels.text.fill%7Ccolor:0xededed&style=element:labels.text.stroke%7Ccolor:0x18191b&style=feature:administrative%7Celement:geometry%7Ccolor:0x757575&style=feature:administrative%7Celement:geometry.fill%7Ccolor:0x262626&style=feature:administrative%7Celement:geometry.stroke%7Ccolor:0x707070&style=feature:administrative%7Celement:labels.text.stroke%7Ccolor:0x1a1a1a&style=feature:administrative.country%7Celement:labels.text.fill%7Ccolor:0x9e9e9e&style=feature:administrative.land_parcel%7Cvisibility:off&style=feature:administrative.locality%7Celement:labels.text.fill%7Ccolor:0xbdbdbd&style=feature:landscape.man_made%7Ccolor:0x000000&style=feature:landscape.natural%7Ccolor:0x001906&style=feature:landscape.natural.terrain%7Celement:geometry%7Ccolor:0x333833&style=feature:poi%7Celement:labels%7Cvisibility:off&style=feature:poi%7Celement:labels.text.fill%7Ccolor:0x757575&style=feature:poi.park%7Celement:geometry%7Ccolor:0x101e1e&style=feature:poi.park%7Celement:labels.text.fill%7Ccolor:0x616161&style=feature:poi.park%7Celement:labels.text.stroke%7Ccolor:0x1b1b1b&style=feature:road%7Celement:geometry.fill%7Ccolor:0x396bb7&style=feature:road%7Celement:geometry.stroke%7Ccolor:0x0f1114&style=feature:road%7Celement:labels.text.fill%7Ccolor:0xededed&style=feature:road%7Celement:labels.text.stroke%7Ccolor:0x000000&style=feature:road.highway%7Celement:geometry%7Ccolor:0x51bcd6&style=feature:road.highway%7Celement:geometry.fill%7Ccolor:0x51bcd6&style=feature:road.highway%7Celement:geometry.stroke%7Ccolor:0x0b0b0f&style=feature:road.highway%7Celement:labels.icon%7Cvisibility:off&style=feature:road.highway%7Celement:labels.text.fill%7Ccolor:0xffffff&style=feature:road.local%7Celement:labels.text.fill%7Ccolor:0xd1d1d1&style=feature:transit%7Celement:labels.icon%7Cvisibility:off&style=feature:transit%7Celement:labels.text.fill%7Ccolor:0x666666&style=feature:water%7Celement:geometry%7Ccolor:0x011428&style=feature:water%7Celement:labels.text.fill%7Ccolor:0xa3a3a3"\
+			+ "&size=800x400"
+			imagelocation = wget.download(url, __file__ + "mapimage.jpg")
+			printC("Downloaded!", "green")
+		except:
+			import traceback
+			logError("Failed to grab weather image! Check the traceback...", traceback.format_exc(), sourcename)
+	else:
+		printC("No API key! If you want a background for your image, go to https://developers.google.com/maps/documentation/streetview/cloud-setup !", "red")
 
-	return line1, line2, line3, line4, alttext
+	return line1, line2, line3, line4, alttext, imagelocation
 
 def GenerateCard():
 
@@ -132,20 +158,50 @@ def GenerateCard():
 	
 	imageresx = tilesX*dpifactor
 	imageresy = tilesY*dpifactor
-	image = Image.new("RGB", (tilesX*dpifactor, tilesY*dpifactor))
+	image = Image.new("RGBA", (tilesX*dpifactor, tilesY*dpifactor))
 	imagedraw = ImageDraw.Draw(image)                 
-	imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=backgroundcolor)
 	
-	line1, line2, line3, line4, alttext = GetCardData()
+	line1, line2, line3, line4, alttext, imagelocation = GetCardData()
+	
+	if imagelocation == "":
+		imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=backgroundcolor)
+	else:
+		try:
+			# Overlay image
+			printC("Opening map image...", "blue")
+			mapimg = Image.open(imagelocation)
+			mapimg = mapimg.resize((imageresx, imageresy))
+			image.paste(mapimg, (0,0))
+			
+			# Background darken
+			overlay = Image.new("RGBA", (imageresx, imageresy))
+			overlayDraw = ImageDraw.Draw(overlay)
+			overlayDraw.rectangle([(0,0), (imageresx, imageresy)], fill=(0, 0, 0, 100)) # Semitransparent overlay for text contrast
+			image = Image.alpha_composite(image, overlay)
+			printC("Map image drawn!", "green")
+		except:
+			import traceback
+			logError("Failed to open weather image! Check the traceback...", traceback.format_exc(), sourcename)
+			imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=backgroundcolor)
+			
+		try:
+			# Delete old image
+			printC("Deleting map image " + imagelocation)
+			os.remove(imagelocation)
+		except:
+			import traceback
+			logError("Unable to delete map image! Check out the traceback!", traceback.format_exc(), sourcename)
+		
 	if line1 and line2 and line3 and line4 and alttext:
+		imagedraw = ImageDraw.Draw(image)
 		font = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 15*round(dpifactor/50))
-		imagedraw.text((dpifactor/50,0), line1, font=font, fill=textcolor)
+		imagedraw.text((dpifactor/25,0), line1, font=font, fill=textcolor)
 		printC("Line 1: " + line1)
-		imagedraw.text((dpifactor/50,imageresy/4), line2, font=font, fill=textcolor)
+		imagedraw.text((dpifactor/25,imageresy/4), line2, font=font, fill=textcolor)
 		printC("Line 2: " + line2)
-		imagedraw.text((dpifactor/50,imageresy/2), line3, font=font, fill=textcolor)
+		imagedraw.text((dpifactor/25,imageresy/2), line3, font=font, fill=textcolor)
 		printC("Line 3: " + line3)
-		imagedraw.text((dpifactor/50,3*imageresy/4), line4, font=font, fill=textcolor)
+		imagedraw.text((dpifactor/25,3*imageresy/4), line4, font=font, fill=textcolor)
 		printC("Line 4: " + line4)
 
 		return image, alttext, tilesX, tilesY
