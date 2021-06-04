@@ -102,7 +102,7 @@ def GenerateCard():
 			elif albumartcolourhsv[2] > 0.6:
 				printC("Bright!!")
 				albumartcolour = (albumartcolour[0]-100, albumartcolour[1]-100, albumartcolour[2]-100)
-				progressbarcolor = (albumartcolour[0]+75, albumartcolour[1]+75, albumartcolour[2]+75)
+				progressbarcolor = (albumartcolour[0]+150, albumartcolour[1]+150, albumartcolour[2]+150)
 				transparency = 180
 			elif albumartcolourhsv[2] < 0.2:
 				printC("Dark!!")
