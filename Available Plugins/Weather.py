@@ -10,7 +10,7 @@
 sourcename = "Weather"
 
 owm_api_key = "825400b6f9c8ad02b637fa732cdce498" # up to 60 requests/minute. Feel free to use it for now. I might remove it in the futre. If that's the case, register for your own API key at OpenWeatherMap and replace this one with yours here!
-gmaps_api_key = "" # 
+gmaps_api_key = "" # Use the Google Cloud console and Maps Static API to get an API key! Note: Google *does* request payment information to use this API. I recommend using PayPal and keeping your API key and account safe!!
 city = "" # Your city/town goes here!
 country_code = "" # Must be ISO 3166-2 code (Tip: Google the ISO 3166-2 for your country)
 unit = "" # metric or imperial only (is cap-sensitive, default is set to metric) (e.g. unit = "metric")
