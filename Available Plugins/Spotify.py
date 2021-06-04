@@ -33,6 +33,7 @@ spotifyClientID = "" # Get yours at https://developer.spotify.com/dashboard
 spotifyClientSecret = ""
 redirect_uri = "http://127.0.0.1:9090" # Set this to your URI in the Spotify dashboard
 
+
 ### YOUR CODE HERE ###
 def GetCardData():
 
@@ -53,7 +54,7 @@ def GetCardData():
 	# Authenticate and get data
 	try:
 		scope = "user-read-playback-state"
-		oauth = SpotifyOAuth(scope=scope, redirect_uri=redirect_uri, cache_path=".spotifcache", client_id=spotifyClientID, client_secret=spotifyClientSecret)
+		oauth = SpotifyOAuth(scope=scope, redirect_uri=redirect_uri, cache_path=__file__+".spotifcache", client_id=spotifyClientID, client_secret=spotifyClientSecret)
 		spotify = spotipy.Spotify(auth_manager=oauth)
 		printC("Connecting to Spotify...", "blue")
 		current_track = spotify.current_playback(additional_types="episode")
@@ -83,7 +84,7 @@ def GetCardData():
 			if device['is_active']:
 				devicename = device['name']
 				
-		othertext = "Spotify | On " + devicename + "\n"
+		othertext = "Spotify | On " + devicename
 	
 		if current_track['item']['type'] == "episode":   # Podcast
 			printC("Podcast!")
@@ -109,10 +110,10 @@ def GetCardData():
 			
 		import wget
 		try:
-			albumArtLocation = wget.download(url)
+			albumArtLocation = wget.download(url,__file__+".image.jpg")
 			printC("Downloaded album art! Saved to " + albumArtLocation, "green")
 		except:
-			printC("Failed to downloaded album art!", "red")
+			printC("Failed to download album art!", "red")
 			import traceback
 			traceback.print_exc()
 				
@@ -143,11 +144,35 @@ def GenerateCard():
 	
 	if songname:
 		
+		deleteimage = True
+		
 		try:
 			printC("Running colorgram...", "blue")
 			albumartcolour = colorgram.extract(albumArtLocation, 1)[0].rgb
-			progressbarcolor = (albumartcolour[0]+75, albumartcolour[1]+75, albumartcolour[2]+75)
 			printC("Colorgram done!", "green")
+			
+			# Tune colours
+			import colorsys
+			albumartcolourhsv = colorsys.rgb_to_hsv(albumartcolour[0]/255, albumartcolour[1]/255, albumartcolour[2]/255)
+			if albumartcolourhsv[2] > 0.9:
+				printC("Superbright!!")
+				albumartcolour = (albumartcolour[0]-200, albumartcolour[1]-200, albumartcolour[2]-200)
+				progressbarcolor = (albumartcolour[0]+150, albumartcolour[1]+150, albumartcolour[2]+150)
+				transparency = 220
+			elif albumartcolourhsv[2] > 0.6:
+				printC("Bright!!")
+				albumartcolour = (albumartcolour[0]-100, albumartcolour[1]-100, albumartcolour[2]-100)
+				progressbarcolor = (albumartcolour[0]+75, albumartcolour[1]+75, albumartcolour[2]+75)
+				transparency = 180
+			elif albumartcolourhsv[2] < 0.2:
+				printC("Dark!!")
+				albumartcolour = (albumartcolour[0], albumartcolour[1], albumartcolour[2])
+				progressbarcolor = (albumartcolour[0]+175, albumartcolour[1]+175, albumartcolour[2]+175)
+				transparency = 150
+			else:
+				printC("Normal!!")
+				progressbarcolor = (albumartcolour[0]+100, albumartcolour[1]+100, albumartcolour[2]+100)
+				transparency = 100
 			
 			# Get album art
 			albumart = Image.open(albumArtLocation)
@@ -157,7 +182,7 @@ def GenerateCard():
 			# Background darken overlay thing
 			overlay = Image.new("RGBA", (imageresx, imageresy))
 			overlayDraw = ImageDraw.Draw(overlay)
-			overlayDraw.rectangle([(0,0), (imageresx, imageresy)], fill=(albumartcolour[0]-100,albumartcolour[1]-100,albumartcolour[2]-100,200)) # Semitransparent overlay for text contrast
+			overlayDraw.rectangle([(0,0), (imageresx, imageresy)], fill=(albumartcolour[0], albumartcolour[1], albumartcolour[2], transparency)) # Semitransparent overlay for text contrast
 			image = Image.alpha_composite(image, overlay)
 			
 		except:
@@ -166,8 +191,18 @@ def GenerateCard():
 			progressbarcolor = (backgroundOverrideColor[0]+50, backgroundOverrideColor[1]+50, backgroundOverrideColor[2]+50)
 			import traceback
 			logError("Unable to display album art or set progress bar color! Check out the traceback!", traceback.format_exc(), sourcename)
+			deleteimage = False
 		
 		imagedraw = ImageDraw.Draw(image)  
+			
+		if deleteimage:
+			try:
+				printC("Deleting album art image " + albumArtLocation)
+				os.remove(albumArtLocation)
+			except:
+				import traceback
+				logError("Unable to delete album art image! Check out the traceback!", traceback.format_exc(), sourcename)
+			
 			
 		imagedraw.text((padding, padding*2), songname, font=songtextfont, fill=songtextcolor) # Song name
 		imagedraw.text((padding, (padding*2)+round(dpifactor/4)), artistname, font=artisttextfont, fill=artisttextcolor) # Artist name
