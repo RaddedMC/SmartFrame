@@ -12,6 +12,8 @@
 # KEY FILES: Fonts/font1.ttf
 #            Colors.txt
 
+from ErrorLogger import logError
+
 moduleName = "Image Generator"
 
 def printG(string, color = "white"):
