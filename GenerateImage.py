@@ -191,7 +191,7 @@ def GenerateImage(cardsinstance, resx, resy, scale):
 		exit(0)
 	except:
 		import traceback
-		logError("There was an error!" + file + "!", traceback.format_exc(), moduleName)
+		logError("There was an error!", traceback.format_exc(), moduleName)
 		return mainimage
 
 
