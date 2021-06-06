@@ -11,8 +11,8 @@ sourcename = "Weather"
 
 owm_api_key = "825400b6f9c8ad02b637fa732cdce498" # up to 60 requests/minute. Feel free to use it for now. I might remove it in the futre. If that's the case, register for your own API key at OpenWeatherMap and replace this one with yours here!
 gmaps_api_key = "" # Use the Google Cloud console and Maps Static API to get an API key! Note: Google *does* request payment information to use this API. I recommend using PayPal and keeping your API key and account safe!!
-city = "" # Your city/town goes here!
-country_code = "" # Must be ISO 3166-2 code (Tip: Google the ISO 3166-2 for your country)
+city = "" # Your city/town goes here! REQUIRED!
+country_code = "" # Must be ISO 3166-2 code (Tip: Google the ISO 3166-2 for your country) REQUIRED!
 unit = "" # metric or imperial only (is cap-sensitive, default is set to metric) (e.g. unit = "metric")
 
 
@@ -39,112 +39,121 @@ def GetCardData():
 	#### Weatherdata ####
 	global unit
 # -- Checks if user entered a valid unit system -- #
+	printC("Checking unit system...", "yellow")
 	if unit == "metric":
 		unit = "metric"
+		printC("Metric detected!", "green")
+
 	elif unit == "imperial":
 		unit = "imperial"
+		printC("Imperial detected!", "green")
+
 	else:
-		printC("Not a valid unit system! Falling back to metric.", "yellow")
+		printC("Entered unit system is either non-existent or is invalid! Falling back to metric.", "yellow")
 		unit = "metric"
-	
-	# -- Weather data gathering -- #
-	def assemble_weather_url(owm_api_key, city, country_code, unit): # Assembles url to make a request to
-		full_url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country_code + "&units=" + unit + "&appid=" + owm_api_key
-		return full_url
 
-	def make_request(full_url): # 
-		response = requests.get(full_url)
-		weather_json_data = response.json()
-		return weather_json_data
+	# -- Checks if user has entered in the required location parameters. -- #
+	import traceback
+	if city == "" or country_code == "":
+		logError("You didn't enter one or both of the required location parameters! Check city and country_code variables!", traceback.format_exc(), sourcename) # Throws traceback (hopefully) with grace
 
-	def parse_response(weather_json_data):
-		if weather_json_data["cod"] != "404": # Sucessfuly finds location
-			printC("Found the location!", "green")
-
-			# -- Parsing the json -- #
-			y = weather_json_data["main"]
-			z = weather_json_data["weather"]
-			wind = weather_json_data["wind"]
-
-			condition = z[0]["description"]
-			temperature = y["temp"]
-			wind_speed = wind["speed"]
-			wind_deg = wind["deg"]
-
-			# -- Conditionnal wind direction variable -- #
-			wind_dir = ""
-			if wind_deg == 0:
-				wind_dir = "N"
-			elif wind_deg == 90:
-				wind_dir = "E"
-			elif wind_deg == 180:
-				wind_dir = "S"
-			elif wind_deg == 270:
-				wind_dir = "W"
-			elif wind_deg in range(1, 89):
-				wind_dir = "NE"
-			elif wind_deg in range(91, 179):
-				wind_dir = "SE"
-			elif wind_deg in range(181, 269):
-				wind_dir = "SW"
-			elif wind_deg in range(271, 359):
-				wind_dir = "NW"
-
-			return condition, temperature, wind_speed, wind_dir # returns all the data from parsing
-		else: # If cannot find data, send None to the card
-			printC("Cannot find city. Sending None to card", "red")
-			line1 = None
-			line2 = None
-			line3 = None
-			line4 = None
-			alttext = None
-			
-
-	OWM_url = assemble_weather_url(owm_api_key, city, country_code, unit) # OpenWeatherMap URL to make a request to
-	weather_json_data = make_request(OWM_url) # Makes the request
-	weather_data = parse_response(weather_json_data) # Parse json -> Python-able stuff and returns a data package
- 
-	# -- All the weather data -- #
-	weather_condition = weather_data[0]
-	temperature = weather_data[1]
-	wind_speed = weather_data[2]
-	wind_dir = weather_data[3]
-	line1 = "Weather for " + weather_json_data["name"]
-
-	# -- Sets lines to use certain units depending on specified unit system -- #
-	if unit == "metric":
-		line2 = str(round(temperature)) + chr(176) + "C"
-		line4 = "Wind: " + str(round(wind_speed*3.6, 2)) + " km/h " + wind_dir # Edit by RaddedMC: OpenWeatherMap's API defaults to m/s, converting to km/h
-		alttext = "The temperature is " + str(temperature) + chr(176) + "C. The weather condition: " + weather_condition
 	else:
-		line2 = str(round(temperature)) + chr(176) + "F"
-		line4 = "Wind: " + str(wind_speed) + " mph " + wind_dir 
-		alttext = "The temperature is " + str(temperature) + chr(176) + "F. The weather condition: " + weather_condition
+		printC("Required parameters are filled in. Attempting to fetch data...", "yellow")
+		# -- Weather data gathering -- #
+		def assemble_weather_url(owm_api_key, city, country_code, unit): # Assembles url to make a request to
+			full_url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country_code + "&units=" + unit + "&appid=" + owm_api_key
+			return full_url
 
-	line3 = str(weather_condition).title()
-	
-	
-	
-	#### WeatherImage ####
-	printC("Attempting to download map bg image...", "blue")
-	if not gmaps_api_key == "":
-		try:
-			import urllib.parse
-			url = "https://maps.googleapis.com/maps/api/staticmap?key=" + urllib.parse.quote(gmaps_api_key)\
-			+ "&center=" + urllib.parse.quote(city + ", " + country_code)\
-			+ "&zoom=15" + "&format=png"\
-			+ "&maptype=roadmap"\
-			+ "&style=element:geometry%7Ccolor:0x0f1114&style=element:labels.icon%7Cvisibility:off&style=element:labels.text.fill%7Ccolor:0xededed&style=element:labels.text.stroke%7Ccolor:0x18191b&style=feature:administrative%7Celement:geometry%7Ccolor:0x757575&style=feature:administrative%7Celement:geometry.fill%7Ccolor:0x262626&style=feature:administrative%7Celement:geometry.stroke%7Ccolor:0x707070&style=feature:administrative%7Celement:labels.text.stroke%7Ccolor:0x1a1a1a&style=feature:administrative.country%7Celement:labels.text.fill%7Ccolor:0x9e9e9e&style=feature:administrative.land_parcel%7Cvisibility:off&style=feature:administrative.locality%7Celement:labels.text.fill%7Ccolor:0xbdbdbd&style=feature:landscape.man_made%7Ccolor:0x000000&style=feature:landscape.natural%7Ccolor:0x001906&style=feature:landscape.natural.terrain%7Celement:geometry%7Ccolor:0x333833&style=feature:poi%7Celement:labels%7Cvisibility:off&style=feature:poi%7Celement:labels.text.fill%7Ccolor:0x757575&style=feature:poi.park%7Celement:geometry%7Ccolor:0x101e1e&style=feature:poi.park%7Celement:labels.text.fill%7Ccolor:0x616161&style=feature:poi.park%7Celement:labels.text.stroke%7Ccolor:0x1b1b1b&style=feature:road%7Celement:geometry.fill%7Ccolor:0x396bb7&style=feature:road%7Celement:geometry.stroke%7Ccolor:0x0f1114&style=feature:road%7Celement:labels.text.fill%7Ccolor:0xededed&style=feature:road%7Celement:labels.text.stroke%7Ccolor:0x000000&style=feature:road.highway%7Celement:geometry%7Ccolor:0x51bcd6&style=feature:road.highway%7Celement:geometry.fill%7Ccolor:0x51bcd6&style=feature:road.highway%7Celement:geometry.stroke%7Ccolor:0x0b0b0f&style=feature:road.highway%7Celement:labels.icon%7Cvisibility:off&style=feature:road.highway%7Celement:labels.text.fill%7Ccolor:0xffffff&style=feature:road.local%7Celement:labels.text.fill%7Ccolor:0xd1d1d1&style=feature:transit%7Celement:labels.icon%7Cvisibility:off&style=feature:transit%7Celement:labels.text.fill%7Ccolor:0x666666&style=feature:water%7Celement:geometry%7Ccolor:0x011428&style=feature:water%7Celement:labels.text.fill%7Ccolor:0xa3a3a3"\
-			+ "&size=800x400"
-			imagelocation = wget.download(url, __file__ + "mapimage.jpg")
-			printC("Downloaded!", "green")
-		except:
-			import traceback
-			logError("Failed to grab weather image! Check the traceback...", traceback.format_exc(), sourcename)
-	else:
-		printC("No API key! If you want a background for your image, go to https://developers.google.com/maps/documentation/streetview/cloud-setup !", "red")
+		def make_request(full_url): #
+			response = requests.get(full_url)
+			weather_json_data = response.json()
+			return weather_json_data
 
-	return line1, line2, line3, line4, alttext, imagelocation
+		def parse_response(weather_json_data):
+			if weather_json_data["cod"] != "404": # Sucessfuly finds location
+				printC("Found the location!", "green")
+
+				# -- Parsing the json -- #
+				y = weather_json_data["main"]
+				z = weather_json_data["weather"]
+				wind = weather_json_data["wind"]
+
+				condition = z[0]["description"]
+				temperature = y["temp"]
+				wind_speed = wind["speed"]
+				wind_deg = wind["deg"]
+
+				# -- Conditionnal wind direction variable -- #
+				wind_dir = ""
+				if wind_deg == 0:
+					wind_dir = "N"
+				elif wind_deg == 90:
+					wind_dir = "E"
+				elif wind_deg == 180:
+					wind_dir = "S"
+				elif wind_deg == 270:
+					wind_dir = "W"
+				elif wind_deg in range(1, 89):
+					wind_dir = "NE"
+				elif wind_deg in range(91, 179):
+					wind_dir = "SE"
+				elif wind_deg in range(181, 269):
+					wind_dir = "SW"
+				elif wind_deg in range(271, 359):
+					wind_dir = "NW"
+
+				return condition, temperature, wind_speed, wind_dir # returns all the data from parsing
+			else: # If cannot find data, send None to the card
+				printC("Cannot find your location. Sending None to card", "red")
+				line1 = None
+				line2 = None
+				line3 = None
+				line4 = None
+				alttext = None
+
+		OWM_url = assemble_weather_url(owm_api_key, city, country_code, unit) # OpenWeatherMap URL to make a request to
+		weather_json_data = make_request(OWM_url) # Makes the request
+		weather_data = parse_response(weather_json_data) # Parse json -> Python-able stuff and returns a data package
+
+		# -- All the weather data -- #
+		weather_condition = weather_data[0]
+		temperature = weather_data[1]
+		wind_speed = weather_data[2]
+		wind_dir = weather_data[3]
+		line1 = "Weather for " + weather_json_data["name"]
+
+		# -- Sets lines to use certain units depending on specified unit system -- #
+		if unit == "metric":
+			line2 = str(round(temperature)) + chr(176) + "C"
+			line4 = "Wind: " + str(round(wind_speed*3.6, 2)) + " km/h " + wind_dir # Edit by RaddedMC: OpenWeatherMap's API defaults to m/s, converting to km/h
+			alttext = "The temperature is " + str(temperature) + chr(176) + "C. The weather condition: " + weather_condition
+		else:
+			line2 = str(round(temperature)) + chr(176) + "F"
+			line4 = "Wind: " + str(wind_speed) + " mph " + wind_dir
+			alttext = "The temperature is " + str(temperature) + chr(176) + "F. The weather condition: " + weather_condition
+
+		line3 = str(weather_condition).title()
+
+		#### WeatherImage ####
+		printC("Attempting to download map bg image...", "blue")
+		if not gmaps_api_key == "":
+			try:
+				import urllib.parse
+				url = "https://maps.googleapis.com/maps/api/staticmap?key=" + urllib.parse.quote(gmaps_api_key)\
+				+ "&center=" + urllib.parse.quote(city + ", " + country_code)\
+				+ "&zoom=15" + "&format=png"\
+				+ "&maptype=roadmap"\
+				+ "&style=element:geometry%7Ccolor:0x0f1114&style=element:labels.icon%7Cvisibility:off&style=element:labels.text.fill%7Ccolor:0xededed&style=element:labels.text.stroke%7Ccolor:0x18191b&style=feature:administrative%7Celement:geometry%7Ccolor:0x757575&style=feature:administrative%7Celement:geometry.fill%7Ccolor:0x262626&style=feature:administrative%7Celement:geometry.stroke%7Ccolor:0x707070&style=feature:administrative%7Celement:labels.text.stroke%7Ccolor:0x1a1a1a&style=feature:administrative.country%7Celement:labels.text.fill%7Ccolor:0x9e9e9e&style=feature:administrative.land_parcel%7Cvisibility:off&style=feature:administrative.locality%7Celement:labels.text.fill%7Ccolor:0xbdbdbd&style=feature:landscape.man_made%7Ccolor:0x000000&style=feature:landscape.natural%7Ccolor:0x001906&style=feature:landscape.natural.terrain%7Celement:geometry%7Ccolor:0x333833&style=feature:poi%7Celement:labels%7Cvisibility:off&style=feature:poi%7Celement:labels.text.fill%7Ccolor:0x757575&style=feature:poi.park%7Celement:geometry%7Ccolor:0x101e1e&style=feature:poi.park%7Celement:labels.text.fill%7Ccolor:0x616161&style=feature:poi.park%7Celement:labels.text.stroke%7Ccolor:0x1b1b1b&style=feature:road%7Celement:geometry.fill%7Ccolor:0x396bb7&style=feature:road%7Celement:geometry.stroke%7Ccolor:0x0f1114&style=feature:road%7Celement:labels.text.fill%7Ccolor:0xededed&style=feature:road%7Celement:labels.text.stroke%7Ccolor:0x000000&style=feature:road.highway%7Celement:geometry%7Ccolor:0x51bcd6&style=feature:road.highway%7Celement:geometry.fill%7Ccolor:0x51bcd6&style=feature:road.highway%7Celement:geometry.stroke%7Ccolor:0x0b0b0f&style=feature:road.highway%7Celement:labels.icon%7Cvisibility:off&style=feature:road.highway%7Celement:labels.text.fill%7Ccolor:0xffffff&style=feature:road.local%7Celement:labels.text.fill%7Ccolor:0xd1d1d1&style=feature:transit%7Celement:labels.icon%7Cvisibility:off&style=feature:transit%7Celement:labels.text.fill%7Ccolor:0x666666&style=feature:water%7Celement:geometry%7Ccolor:0x011428&style=feature:water%7Celement:labels.text.fill%7Ccolor:0xa3a3a3"\
+				+ "&size=800x400"
+				imagelocation = wget.download(url, __file__ + "mapimage.jpg")
+				printC("Downloaded!", "green")
+			except:
+				import traceback
+				logError("Failed to grab weather image! Check the traceback...", traceback.format_exc(), sourcename)
+		else:
+			printC("No API key! If you want a background for your image, go to https://developers.google.com/maps/documentation/streetview/cloud-setup !", "red")
+
+		return line1, line2, line3, line4, alttext, imagelocation
 
 def GenerateCard():
 
