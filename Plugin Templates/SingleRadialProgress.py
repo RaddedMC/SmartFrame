@@ -49,7 +49,7 @@ def GenerateCard():
     # EDIT THESE TO CUSTOMIZE YOUR PLUGIN'S APPEARANCE!
     tilesX = 2 # I don't recommend changing these values for this template
     tilesY = 2 # I don't recommend changing these values for this template
-    dpifactor = 200 # Change this to increase card resolution. Don't go too high!!!
+    dpifactor = 400 # Change this to increase card resolution. Don't go too high!!!
     backgroundcolor = COLORS[3] # Change this to a 3-value tuple (255, 200, 100) to change the background colour!
     textcolor = COLORS[1] # Change this to a 3-value tuple to change the text colour!
     progressfillcolor = (COLORS[3][0]+50, COLORS[3][1]+50, COLORS[3][2]+50) # Change this to a 3-value tuple to change the color of your progress meter!
@@ -71,7 +71,7 @@ def GenerateCard():
             progresstextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 30*round(dpifactor/50))
             progresstexttop = (imageresy/4)-(dpifactor/10)
         else:
-            progresstextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 15*round(dpifactor/50))
+            progresstextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 20*round(dpifactor/50))
             progresstexttop = 5*imageresy/16
         imagedraw.text((dpifactor/50,3*imageresy/4), maintext, font=maintextfont, fill=textcolor)
         circlepos = [(imageresx/8,(imageresy/8)-(dpifactor/10)),(7*imageresx/8, (7*imageresy/8)-(dpifactor/10))]
