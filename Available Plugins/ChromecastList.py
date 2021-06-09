@@ -84,10 +84,11 @@ def GetCardData():
 			display_name = chromecast.status.display_name
 			media_title = str(chromecast.media_controller.status.title)
 
-			if media_title != None:
-				media_title == media_title
+			# -- If none, print "nothing is playing" -- #
+			if media_title == None:
+				media_title = media_title
 			else:
-				media_title == "Nothing is playing right now!"
+				media_title = "Nothing is playing right now!"
 
 			device_icon = device_icon_picker(chromecast.device.model_name)
 			play_icon = player_state_icon(chromecast.media_controller.status.player_state)
