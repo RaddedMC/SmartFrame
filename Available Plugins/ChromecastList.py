@@ -70,7 +70,14 @@ def GetCardData():
 		return chromecasts, browser
 	
 	groupList = []
-	chromecasts, browser = connect_chromecasts()
+	
+	# -- If pychromecast borks, crash the plugin -- #
+	import traceback
+	try:
+		chromecasts, browser = connect_chromecasts()
+	except:
+		logError("Pychromecast failed to initialze or connect to the chromecast(s)!", traceback.format_exc(), sourcename)
+		
 	browser.stop_discovery()
 	for chromecast in chromecasts:
 		if chromecast.status.status_text == '':
@@ -111,8 +118,10 @@ def GetCardData():
 
 			groupList.append(Group(friendly_name + " | " + display_name + "\n" + media_title, itemList))
 			printC("Sucessfully fetched all data from the cast device!", "green")
-
+			
+			printC("Disconnecting from " + friendly_name)
 			chromecast.disconnect()
+			printC("Disconnceted from " + friendly_name)
 	
 	if groupList:
 		maintext = str(len(chromecasts)) + " Chromecasts Detected"
