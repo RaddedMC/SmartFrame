@@ -41,12 +41,11 @@ def GetCardData():
 # -- Checks if user entered a valid unit system -- #
 	printC("Checking unit system...", "yellow")
 	if unit == "metric":
-		unit = "metric"
-		printC("Metric detected!", "green")
+        printC("Metric detected!", "green")
+		pass
 
 	elif unit == "imperial":
-		unit = "imperial"
-		printC("Imperial detected!", "green")
+        pass
 
 	else:
 		printC("Entered unit system is either non-existent or is invalid! Falling back to metric.", "yellow")

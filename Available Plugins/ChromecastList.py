@@ -50,7 +50,7 @@ def GetCardData():
 
 	# -- Icon picker for player state -- #
 	def player_state_icon(player_state):
-		if player_state == 'PLAYING' or player_state == 'BUFFERING':
+		if player_state == 'PLAYING' or player_state == 'BUFFERING' or player_state == 'UNKNOWN':
 			player_icon_path = GetPathWithinNeighbouringFolder("play_icon.png", "Chromecast Icons")
 		elif player_state == 'PAUSED':
 			player_icon_path = GetPathWithinNeighbouringFolder("pause_icon.png", "Chromecast Icons")
@@ -93,9 +93,9 @@ def GetCardData():
 
 			# -- If none, print "nothing is playing" -- #
 			if media_title == None:
-				media_title = media_title
+                media_title = "Nothing is playing right now!"
 			else:
-				media_title = "Nothing is playing right now!"
+                pass
 
 			device_icon = device_icon_picker(chromecast.device.model_name)
 			play_icon = player_state_icon(chromecast.media_controller.status.player_state)
