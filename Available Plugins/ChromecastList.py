@@ -61,7 +61,7 @@ def GetCardData():
 	# -- Function to connect to chromecasts -- #
 	def connect_chromecasts():
 		printC("Getting chromecasts...", "blue")
-		chromecasts, browser = pychromecast.get_chromecasts(timeout=5)
+		chromecasts, browser = pychromecast.get_chromecasts(tries=2, retry_wait=5, timeout=15)
 		for chromecast in chromecasts:
 			printC("Connecting to chromecast " + chromecast.device.friendly_name + "....")
 			chromecast.connect()
