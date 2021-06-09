@@ -12,7 +12,7 @@ srvrPath = ""
 sshUsername = ""
 sshPWD = ""
 sshIP = "192.168.1.133"
-sourcename = "SMB Share"
+sourcename = "SMB Share "
 
 # This plugin uses df to find the storage capacity of a mounted volume.
 
