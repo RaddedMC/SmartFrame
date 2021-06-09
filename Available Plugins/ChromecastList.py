@@ -66,7 +66,7 @@ def GetCardData():
 			printC("Connecting to chromecast " + chromecast.device.friendly_name + "....")
 			chromecast.connect()
 			printC("Waiting chromecast " + chromecast.device.friendly_name + "....")
-			chromecast.wait()
+			chromecast.wait(timeout=15)
 		return chromecasts, browser
 	
 	groupList = []
