@@ -45,6 +45,7 @@ def GetCardData():
 		pass
 
 	elif unit == "imperial":
+		printC("Imperial detected!", "green")
 		pass
 
 	else:
