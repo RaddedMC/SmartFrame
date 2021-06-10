@@ -11,9 +11,9 @@ sourcename = "Weather"
 
 owm_api_key = "825400b6f9c8ad02b637fa732cdce498" # up to 60 requests/minute. Feel free to use it for now. I might remove it in the futre. If that's the case, register for your own API key at OpenWeatherMap and replace this one with yours here!
 gmaps_api_key = "" # Use the Google Cloud console and Maps Static API to get an API key! Note: Google *does* request payment information to use this API. I recommend using PayPal and keeping your API key and account safe!!
-city = "" # Your city/town goes here! REQUIRED!
-country_code = "" # Must be ISO 3166-2 code (Tip: Google the ISO 3166-2 for your country) REQUIRED!
-unit = "" # metric or imperial only (is cap-sensitive, default is set to metric) (e.g. unit = "metric")
+city = "London" # Your city/town goes here! REQUIRED!
+country_code = "CA" # Must be ISO 3166-2 code (Tip: Google the ISO 3166-2 for your country) REQUIRED!
+unit = "metric" # metric or imperial only (is cap-sensitive, default is set to metric) (e.g. unit = "metric")
 
 
 from PIL import Image, ImageFont, ImageDraw
@@ -51,65 +51,64 @@ def GetCardData():
 		printC("Entered unit system is either non-existent or is invalid! Falling back to metric.", "yellow")
 		unit = "metric"
 
+	# -- Weather data gathering -- #
+	def assemble_weather_url(owm_api_key, city, country_code, unit): # Assembles url to make a request to
+		full_url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country_code + "&units=" + unit + "&appid=" + owm_api_key
+		return full_url
+
+	def make_request(full_url): #
+		response = requests.get(full_url)
+		weather_json_data = response.json()
+		return weather_json_data
+
+	def parse_response(weather_json_data):
+		if weather_json_data["cod"] != "404": # Sucessfuly finds location
+			printC("Found the location!", "green")
+
+			# -- Parsing the json -- #
+			y = weather_json_data["main"]
+			z = weather_json_data["weather"]
+			wind = weather_json_data["wind"]
+
+			condition = z[0]["description"]
+			temperature = y["temp"]
+			wind_speed = wind["speed"]
+			wind_deg = wind["deg"]
+
+			# -- Conditionnal wind direction variable -- #
+			wind_dir = ""
+			if wind_deg == 0:
+				wind_dir = "N"
+			elif wind_deg == 90:
+				wind_dir = "E"
+			elif wind_deg == 180:
+				wind_dir = "S"
+			elif wind_deg == 270:
+				wind_dir = "W"
+			elif wind_deg in range(1, 89):
+				wind_dir = "NE"
+			elif wind_deg in range(91, 179):
+				wind_dir = "SE"
+			elif wind_deg in range(181, 269):
+				wind_dir = "SW"
+			elif wind_deg in range(271, 359):
+				wind_dir = "NW"
+
+			return condition, temperature, wind_speed, wind_dir # returns all the data from parsing
+		else: # If cannot find data, send None to the card
+			logError("Cannot find your location. Exiting the Weather process...", "", sourcename)
+			exit()
+
+		# -- End of functions section -- #
+
 	# -- Checks if user has entered in the required location parameters. -- #
 	import traceback
 	if city == "" or country_code == "":
-		printC("You didn't enter one or both of the required location parameters! Check city and country_code variables! Returning None to card.", "red") # Throws traceback (hopefully) with grace
-		return None, None, None, None, None, None
+		logError("You didn't enter one or both of the required location parameters! Check city and country_code variables! Exiting the Weather process.", "", sourcename)
+		exit()
 
 	else:
 		printC("Required parameters are filled in. Attempting to fetch data...", "yellow")
-		# -- Weather data gathering -- #
-		def assemble_weather_url(owm_api_key, city, country_code, unit): # Assembles url to make a request to
-			full_url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country_code + "&units=" + unit + "&appid=" + owm_api_key
-			return full_url
-
-		def make_request(full_url): #
-			response = requests.get(full_url)
-			weather_json_data = response.json()
-			return weather_json_data
-
-		def parse_response(weather_json_data):
-			if weather_json_data["cod"] != "404": # Sucessfuly finds location
-				printC("Found the location!", "green")
-
-				# -- Parsing the json -- #
-				y = weather_json_data["main"]
-				z = weather_json_data["weather"]
-				wind = weather_json_data["wind"]
-
-				condition = z[0]["description"]
-				temperature = y["temp"]
-				wind_speed = wind["speed"]
-				wind_deg = wind["deg"]
-
-				# -- Conditionnal wind direction variable -- #
-				wind_dir = ""
-				if wind_deg == 0:
-					wind_dir = "N"
-				elif wind_deg == 90:
-					wind_dir = "E"
-				elif wind_deg == 180:
-					wind_dir = "S"
-				elif wind_deg == 270:
-					wind_dir = "W"
-				elif wind_deg in range(1, 89):
-					wind_dir = "NE"
-				elif wind_deg in range(91, 179):
-					wind_dir = "SE"
-				elif wind_deg in range(181, 269):
-					wind_dir = "SW"
-				elif wind_deg in range(271, 359):
-					wind_dir = "NW"
-
-				return condition, temperature, wind_speed, wind_dir # returns all the data from parsing
-			else: # If cannot find data, send None to the card
-				printC("Cannot find your location. Sending None to card", "red")
-				line1 = None
-				line2 = None
-				line3 = None
-				line4 = None
-				alttext = None
 
 		OWM_url = assemble_weather_url(owm_api_key, city, country_code, unit) # OpenWeatherMap URL to make a request to
 		weather_json_data = make_request(OWM_url) # Makes the request
