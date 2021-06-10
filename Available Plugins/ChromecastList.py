@@ -50,9 +50,9 @@ def GetCardData():
 
 	# -- Icon picker for player state -- #
 	def player_state_icon(player_state):
-		if player_state == 'PLAYING' or player_state == 'BUFFERING' or player_state == 'UNKNOWN':
+		if player_state == 'PLAYING' or player_state == 'BUFFERING':
 			player_icon_path = GetPathWithinNeighbouringFolder("play_icon.png", "Chromecast Icons")
-		elif player_state == 'PAUSED':
+		elif player_state == 'PAUSED' or player_state == 'UNKNOWN':
 			player_icon_path = GetPathWithinNeighbouringFolder("pause_icon.png", "Chromecast Icons")
 		else:
 			player_icon_path = None
@@ -68,16 +68,16 @@ def GetCardData():
 			printC("Waiting chromecast " + chromecast.device.friendly_name + "....")
 			chromecast.wait(timeout=15)
 		return chromecasts, browser
-	
+
 	groupList = []
-	
+
 	# -- If pychromecast borks, crash the plugin -- #
 	import traceback
 	try:
 		chromecasts, browser = connect_chromecasts()
 	except:
 		logError("Pychromecast failed to initialze or connect to the chromecast(s)!", traceback.format_exc(), sourcename)
-		
+
 	browser.stop_discovery()
 	for chromecast in chromecasts:
 		if chromecast.status.status_text == '':
@@ -93,9 +93,9 @@ def GetCardData():
 
 			# -- If none, print "nothing is playing" -- #
 			if media_title == None:
-                media_title = "Nothing is playing right now!"
+				media_title = "Nothing is playing right now!"
 			else:
-                pass
+				pass
 
 			device_icon = device_icon_picker(chromecast.device.model_name)
 			play_icon = player_state_icon(chromecast.media_controller.status.player_state)
@@ -118,11 +118,11 @@ def GetCardData():
 
 			groupList.append(Group(friendly_name + " | " + display_name + "\n" + media_title, itemList))
 			printC("Sucessfully fetched all data from the cast device!", "green")
-			
+
 			printC("Disconnecting from " + friendly_name)
 			chromecast.disconnect()
 			printC("Disconnceted from " + friendly_name)
-	
+
 	if groupList:
 		maintext = str(len(chromecasts)) + " Chromecasts Detected"
 		alttext = maintext + ". " + groupList[0].groupName
@@ -284,9 +284,9 @@ def GetPresets():
 	else:
 		SMARTFRAMEFOLDER = currentLocation
 	printC("SmartFrame is located in " + SMARTFRAMEFOLDER, "green")
-	
+
 	sys.path.append(SMARTFRAMEFOLDER)
-	
+
 	printC("Gathering colors...", "blue")
 	colorfile = open(SMARTFRAMEFOLDER + '/Colors.txt', 'r')
 	colorfileLines = colorfile.readlines()
@@ -297,7 +297,7 @@ def GetPresets():
 		else:
 			COLORS.append((int(line[0:3]), int(line[4:7]), int(line[8:11])))
 			printC("Added color " + line[0:3] + " " + line[4:7] + " " + line[8:11] + "!")
-			
+
 GetPresets()
 from ErrorLogger import logError
 ### SmartFrame.py calls this to get a card. I don't recommend editing this.
@@ -306,26 +306,26 @@ def GetCard():
 	# Generate card...
 	printC("Starting card generation...", "blue")
 	image, alttext, tilesX, tilesY = GenerateCard() # Calls the above function to get data
-	
+
 	# Check if card exists
 	if image and alttext and tilesX and tilesY:
 		printC("Finished generating card!...", "green")
-		
-		
+
+
 		# Setup output location
 		outputLocation = SMARTFRAMEFOLDER + "/Cards/" + sourcename + ".png"
 		printC("Will output to " + outputLocation, "cyan")
-		
+
 		# Save
 		image.save(outputLocation)
 		printC("Image saved to  " + outputLocation + "!", "green")
-		
+
 		from Card import Card
 		return Card(outputLocation, alttext, sourcename, tilesX, tilesY)
 	else:
 		# No cards
 		printC("No cards to return!...", "red")
 		return None
-	
+
 if __name__ == "__main__":
 	GetCard()
