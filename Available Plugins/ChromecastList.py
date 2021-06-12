@@ -126,7 +126,7 @@ def GetCardData():
 				chromecast.disconnect()
 				printC("Disconnceted from " + friendly_name)
 		except:
-			logError("Failed to fetch data from chromecast " + str(count), "", sourcename)
+			logError("Failed to fetch data from chromecast " + str(count) + ". Most likely failed to connect to it.", "", sourcename)
 
 	if groupList:
 		maintext = str(len(chromecasts)) + " Chromecasts Detected"
