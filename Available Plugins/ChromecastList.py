@@ -79,49 +79,54 @@ def GetCardData():
 		logError("Pychromecast failed to initialze or connect to the chromecast(s)!", traceback.format_exc(), sourcename)
 
 	browser.stop_discovery()
-	for chromecast in chromecasts:
-		if chromecast.status.status_text == '':
-			printC("Idling chromecast detected...Will not display it.", "yellow")
-			continue
-		else:
-			printC("Getting data from chromecast " + chromecast.device.friendly_name + "...", "cyan")
-			itemList = []
-
-			friendly_name = chromecast.device.friendly_name
-			display_name = chromecast.status.display_name
-			media_title = str(chromecast.media_controller.status.title)
-
-			# -- If none, print "nothing is playing" -- #
-			if media_title == None:
-				media_title = "Nothing is playing right now!"
+	for count, chromecast in enumerate(chromecasts): # To make interpreting seperate chromecasts in logs easier
+		# -- Tries to fetch data from cast device -- #
+		try:
+			printC("Trying to fetch data from chromecast " + str(count), "yellow")
+			if chromecast.status.status_text == '':
+				printC("Idling chromecast detected...Will not display it.", "yellow")
+				continue
 			else:
-				pass
+				printC("Getting data from chromecast " + chromecast.device.friendly_name + "...", "cyan")
+				itemList = []
 
-			device_icon = device_icon_picker(chromecast.device.model_name)
-			play_icon = player_state_icon(chromecast.media_controller.status.player_state)
+				friendly_name = chromecast.device.friendly_name
+				display_name = chromecast.status.display_name
+				media_title = str(chromecast.media_controller.status.title)
 
-			volume_level = chromecast.status.volume_level
-			printC("Sucessfully fetched volume level.", "green")
-
-			itemList.append(Item(chromecast.device.friendly_name + " volume", device_icon, volumecolor, bgFillAmt=volume_level))
-			printC("Sucessfully finish generating volume item", "green")
-
-			if play_icon != None:
-				if chromecast.media_controller.status.duration == None:
-					printC("The media is probably being live-streamed since there's no duration!", "yellow")
-					itemList.append(Item(chromecast.device.friendly_name + " play state", play_icon, streamingcolor, bgFillAmt=1.0))
-
+				# -- If none, print "nothing is playing" -- #
+				if media_title == None:
+					media_title = "Nothing is playing right now!"
 				else:
-					player_progress = chromecast.media_controller.status.current_time / chromecast.media_controller.status.duration
-					itemList.append(Item(chromecast.device.friendly_name + " play state", play_icon, playingcolor, bgFillAmt=player_progress))
-					printC("Sucessfully gathered player state icon.", "green")
+					pass
 
-			groupList.append(Group(friendly_name + " | " + display_name + "\n" + media_title, itemList))
-			printC("Sucessfully fetched all data from the cast device!", "green")
+				device_icon = device_icon_picker(chromecast.device.model_name)
+				play_icon = player_state_icon(chromecast.media_controller.status.player_state)
 
-			printC("Disconnecting from " + friendly_name)
-			chromecast.disconnect()
-			printC("Disconnceted from " + friendly_name)
+				volume_level = chromecast.status.volume_level
+				printC("Sucessfully fetched volume level.", "green")
+
+				itemList.append(Item(chromecast.device.friendly_name + " volume", device_icon, volumecolor, bgFillAmt=volume_level))
+				printC("Sucessfully finish generating volume item", "green")
+
+				if play_icon != None:
+					if chromecast.media_controller.status.duration == None:
+						printC("The media is probably being live-streamed since there's no duration!", "yellow")
+						itemList.append(Item(chromecast.device.friendly_name + " play state", play_icon, streamingcolor, bgFillAmt=1.0))
+
+					else:
+						player_progress = chromecast.media_controller.status.current_time / chromecast.media_controller.status.duration
+						itemList.append(Item(chromecast.device.friendly_name + " play state", play_icon, playingcolor, bgFillAmt=player_progress))
+						printC("Sucessfully gathered player state icon.", "green")
+
+				groupList.append(Group(friendly_name + " | " + display_name + "\n" + media_title, itemList))
+				printC("Sucessfully fetched all data from the cast device!", "green")
+
+				printC("Disconnecting from " + friendly_name)
+				chromecast.disconnect()
+				printC("Disconnceted from " + friendly_name)
+		except:
+			logError("Failed to fetch data from chromecast " + str(count), "", sourcename)
 
 	if groupList:
 		maintext = str(len(chromecasts)) + " Chromecasts Detected"
