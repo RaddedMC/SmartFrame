@@ -1,41 +1,24 @@
 #!/usr/bin/python3
-# RaddedMC's SmartFrame v2 -- ListOfObjects.py
-# This is a plugin template for SmartFrame v2.
-# This template works similarly to ObjectGroups, but instead displays Item objects in a grid. Similar to Apple HomeKit UI
-# Useful for things like weather, smart home devices like plugs, or iCloud device batteries.
+# RaddedMC's SmartFrame v2 -- WemoKasaPlugs.py
+# This plugin grabs state info from Belkin WeMo and TP-Link Kasa smart plugs on your network.
+# No special setup is required, but if you have issues discovering Kasa plugs, set the KasaSubnet variable to your network's broadcast address!
+# (Usually 192.168.1.255 or 192.168.0.255 or something else ending in 255)
 
-# Required deps: Pillow, termcolor
+# Required deps: Pillow, termcolor, pywemo, python-kasa
 
-# DEVELOPER INSTRUCTIONS:
-# Assume you have root priveleges.
-# Use the variables in GetCardData() to change the tile size and pixel density of your Card.
-# If you need additional files, place them into a folder of the same name as your plugin.
-# Use the global variable SMARTFRAMEFOLDER for a string with the location of the SmartFrame folder.
-# For debug/overflow purposes, make sure you set alttext to something that accurately represents your collected data.
-# Use printC(text, color of text) if you need to print. 
-# If you need to throw an error, use logError("main error description", "more detailed traceback / traceback.format_exc()", sourcename)
-# The above will log to both console and the standard error logging file.
-
-# Similar to ObjectGroups, create and return a list of Items to be displayed in a grid.
-# Item names ARE DISPLAYED TO THE USER in this plugin.
-# Remember to set maintext, alttext, and sourcename!
-
-# To test, just run your card in a terminal! The image will appear in your Smartframe/Cards folder. I recommend deleting this file before running SmartFrame again.
-# Note that if your plugin crashes, it will not take down the whole SmartFrame process. However, tracebacks will be outputted to the user.
-
-# When you're ready to release to the main repo, place all your code and related files in a folder and place it into Available Plugins/, then make a pull request!
-
-# Add any user-definable variables here! (API keys, usernames, etc.)
-sourcename = "Set your card's default sourcename here"
+sourcename = "Kasa and WeMo plugs"
+KasaSubnet = "192.168.1.255"
 
 from PIL import Image, ImageFont, ImageDraw
 import os
 import sys
+import pywemo
+from kasa import Discover
+import asyncio
 
 SMARTFRAMEFOLDER = ""
 COLORS = []
 
-### YOUR CODE HERE ###
 def GetCardData():
 	def GetPathWithinNeighbouringFolder(fileWithin, folder):
 		file = __file__.replace('\\', '/') # Remove this if you use a specific file path for your image or some other method.
@@ -44,19 +27,62 @@ def GetCardData():
 		fullImagePath = file + "/" + folder + "/" + fileWithin # File location of image
 		return fullImagePath
 		
-	# Sample code
-	#itemList = [Item("item", "/path/to/image", (255,255,255), bgFillAmt=0.5), Item("item", "/path/to/image/2", (255,255,255), bgFillAmt=0.5)]
 	itemList = []
-	maintext = "Some Items"
-	alttext = "Whatever you want!"
+	maintext = "Kasa | WeMo"
+	alttext = "Whatever you want!" # Number of plugs
 	
-	# Your code here
+	plugicon = GetPathWithinNeighbouringFolder("outlet.png", "WemoKasaPlugs")
+	
+	try:
+		printC("Getting Wemo Plugs...", "blue")
+		wemoplugs = pywemo.discover_devices()
+		for wemoplug in wemoplugs:
+			try:
+				plugname = wemoplug.basicevent.GetFriendlyName()['FriendlyName']
+				plugstate = wemoplug.get_state()
+				if not plugstate:
+					printC("Plug " + plugname + " is off! Skipping...")
+					continue
+				plugcolor = (66, 245, 117)
+				itemList.append(Item(plugname, plugicon, plugcolor, bgFillAmt=1))
+			except:
+				import traceback
+				logError("Unable to get info from a wemo plug!", traceback.format_exc(), sourcename)
+				continue
+	except:
+		import traceback
+		logError("Unknown error with WeMo plugs!", traceback.format_exc(), sourcename)
+	
+	try:
+		printC("Getting Kasa Plugs...", "blue")
+		if not KasaSubnet or KasaSubnet == "":
+			kasaplugs = asyncio.run(Discover.discover())
+		else:
+			kasaplugs = asyncio.run(Discover.discover(target=KasaSubnet))
+		for plugIP in kasaplugs:
+			try:
+				plugname = kasaplugs[plugIP].alias
+				plugstate = kasaplugs[plugIP].is_on
+				if not plugstate:
+					printC("Plug " + plugname + " is off! Skipping...")
+					continue
+				plugcolor = (66, 245, 182) # True
+				itemList.append(Item(plugname, plugicon, plugcolor, bgFillAmt=1))
+			except:
+				import traceback
+				logError("Unable to get info from a kasa plug!", traceback.format_exc(), sourcename)
+				continue
+	except:
+		import traceback
+		logError("Unknown error with Kasa plugs!", traceback.format_exc(), sourcename)
+		
+	printC("Data collect done!", "green")
 	
 	return itemList, maintext, alttext
-### YOUR CODE HERE ###
 
 
 def GenerateCard():
+	
 	itemList, maintext, alttext = GetCardData()
 	if itemList:
 		if len(itemList) > 8:
@@ -76,7 +102,7 @@ def GenerateCard():
 		imagedraw = ImageDraw.Draw(image)                 
 
 		# Draw background
-		backgroundcolor = COLORS[3] # Change this to a 3-value tuple (255, 200, 100) to change the background colour!
+		backgroundcolor = (189, 255, 205) # Change this to a 3-value tuple (255, 200, 100) to change the background colour!
 		imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=backgroundcolor)
 
 		# Draw Item tiles
@@ -99,7 +125,7 @@ def GenerateCard():
 				xcount += 1
 				
 		# Draw maintext
-		maintextcolor = COLORS[1] # Change this to a 3-value tuple to change the text colour!
+		maintextcolor = (0,0,0) # Change this to a 3-value tuple to change the text colour!
 		maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 12*round(dpifactor/50))
 		imagedraw.text((round(padding), round(imageresy-(dpifactor/3))), maintext, fill=maintextcolor, font=maintextfont)
 	else:
@@ -142,7 +168,7 @@ class Item:
 		# Add itemname text
 		itemtextcolor = (0,0,0) # To change the appearance of maintext font, backgrounds, or anything else, head to GenerateCard()!
 		itemtextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", round(xyres/8))
-		imagedraw.text((cornerrad, 4*xyres/5), self.itemName, fill=itemtextcolor, font=itemtextfont)
+		imagedraw.text((cornerrad/2, 4*xyres/5), self.itemName[:11], fill=itemtextcolor, font=itemtextfont)
 		
 		return image
 		

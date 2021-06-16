@@ -1,0 +1,1 @@
+Plug icon is from https://cdn.icon-icons.com/icons2/510/PNG/512/outlet_icon-icons.com_50081.png
