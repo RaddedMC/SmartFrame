@@ -96,13 +96,12 @@ def GenerateCard():
 			try:
 				groupImg = group.Image((round(imageresx-(padding*2)),round(11*dpifactor/24)), dpifactor/10)
 			except:
-				printC("Unknown error with group " + group.groupName + "! Moving on to next group...", "red")
 				import traceback
-				traceback.print_exc()
+				logError("Unknown error with group " + group.groupName + "! Moving on to next group...", traceback.format_exc(), sourcename)
 				continue
 			image.paste(groupImg, (round(padding), round(top)), mask = groupImg)
 			top += (11*dpifactor/24) + padding
-		imagedraw.text((padding, top), maintext, fill=maintextcolor, font=maintextfont)
+		imagedraw.text((round(padding), round(top)), maintext, fill=maintextcolor, font=maintextfont)
 	else:
 		printC("No data! Sending null data.", "red")
 		return None, None, None, None
@@ -176,7 +175,7 @@ class Group:
 				itemImage = item.Image(imageWidth, cornerrad)
 			except:
 				import traceback
-				logError("Unknown error with image " + group.imageName + "! Moving on to next image...", traceback.format_exc(), sourcename)
+				logError("Unknown error with image " + image.imageName + "! Moving on to next image...", traceback.format_exc(), sourcename)
 				continue
 			image.paste(itemImage, (leftmost, padding), mask=itemImage)
 			leftmost += imageWidth+(padding)
