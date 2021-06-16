@@ -84,7 +84,7 @@ def GenerateCard():
 	
 	imageFile, background, alttext = GetCardData()
 	
-	if image and background and alttext:
+	if imageFile and background and alttext:
 		imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=background)
 		icon = Image.open(imageFile)
 		icon = icon.resize((round(imageresx-(dpifactor/12)), round(imageresy-(dpifactor/12))))
