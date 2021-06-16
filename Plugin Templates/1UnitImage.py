@@ -47,6 +47,8 @@ def GetCardData():
 	file = file[:index]
 	fullImagePath = file + "/" + imagePath # File location of image
 	
+	fullImagePath = ""
+	
 	return fullImagePath, background, alttext
 #### YOUR CODE HERE ####
 
@@ -65,7 +67,16 @@ def GenerateCard():
 		imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=background)
 		icon = Image.open(imageFile)
 		icon = icon.resize((round(imageresx-(dpifactor/12)), round(imageresy-(dpifactor/12))))
-		image.paste(icon, (round(dpifactor/25), round(dpifactor/25)), mask=icon)
+		try:
+			image.paste(icon, (round(dpifactor/25), round(dpifactor/25)), mask=icon)
+		except:
+			printC("Error with transparency! Trying without...", "red")
+			try:
+				image.paste(icon, (round(dpifactor/25), round(dpifactor/25)))
+			except:
+				import traceback
+				logError("Unable to display image! Check the traceback.", traceback.format_exc(), sourcename)
+				return None, None, None, None
 	else:
 		printC("No data! Sending null data.", "red")
 		return None, None, None, None
