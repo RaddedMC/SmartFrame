@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- NewCovidCasesMLHU.py by @Raminh05
 # This is a plugin to display daily new covid cases in the region of Middlesex-London, Ontario, Canada.
-# Middlesex-London COVID data from the Middlesex-London Health Unit.
+# Middlesex-London COVID data from the Government of Ontario
 
-# Required deps for NewCasesMLHUCovid: Pillow, termcolor, requests, datetime, openpyxl.
+# Required deps for NewCasesMLHUCovid: Pillow, termcolor, requests, datetime, csv (should already be included)
 
 # No need to define any user variables! It just works. 
 
@@ -25,70 +25,73 @@ def GetCardData():
 	alttext = "Whatever you want!"
 
 	# -- Import modules -- #
+	from csv import reader
 	import requests
-	from openpyxl import load_workbook
-	from datetime import datetime, timedelta
+	from datetime import datetime
 
-	# Fetches excel file from MLHU
-	def get_response(excel_url):
-		response = requests.get(excel_url)
-
-		if response.status_code == 404: # If the plugin fails to get data
-			printC("MLHU has not updated the excel file for today. Falling back to yesterday's report.", "yellow")
-			yesterday = datetime.now() - timedelta(1)
-			date = yesterday.strftime("%Y-%m-%d")
-			get_response("https://www.healthunit.com/uploads/summary_of_covid-19_cases_in_middlesex-london_" + date + ".xlsx")
-
-		else:
-			printC("Sucessfully fetched excel file.", "green")
-			with open("london_covid.xlsx", 'wb') as f:
-				f.write(response.content)
-				f.close()
-				printC("Finished writing contents. Moving on to parsing.", "green")
-
-	# Parses excel file, gets case data
-	def parse_response():
-		wb = load_workbook("london_covid.xlsx")
-		worksheet = wb["Daily status"]
-		xlsx_date = worksheet["A4"].value
-		new_cases = worksheet["B15"].value
-
-		return xlsx_date, new_cases
-
+	ontario_csv_url = 'https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e6/resource/8a88fe6d-d8fb-41a3-9d04-f0550a44999f/download/daily_change_in_cases_by_phu.csv'
 	now = datetime.now()
 	time = now.strftime("%H:%M")
 	date = now.strftime("%Y-%m-%d")
-	excel_url = "https://www.healthunit.com/uploads/summary_of_covid-19_cases_in_middlesex-london_" + date + ".xlsx"
 
-   # -- Only run this plugin at 3PM -- #
-	if time == "15:00":
-		response = get_response(excel_url) # Updates data to the xlsx file
-		count = parse_response()[1]
-	else: # -- If not 3PM -- #
-		printC("Not 3PM yet. Looking to see if you have the most current COVID data...", "yellow")
+	# -- Fetches csv. -- #
+	def get_write_data(ontario_csv_url):
+		r = requests.get(ontario_csv_url)
+		with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'wb') as f:
+			f.write(r.content)
+			f.close()
+
+	# -- Parses and returns case figures -- #
+	def cases():
+		with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
+			data = list(reader(f))
+			cases = [i[16] for i in data[400::]] # Modifed from NewCovidCasesOntario to suit Middlesex region
+			f.close()
+			return cases
+
+	def dates():
+		with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
+			data = list(reader(f))
+			dates = [i[0] for i in data[400::]]
+			f.close()
+			csv_date = dates[-1]
+			return csv_date
+
+   # -- Only run this plugin at 11 AM -- #
+	if time == "11:00":
+		# -- Check if the program can obtain CSV file -- #
 		try:
-			xlsx_date = parse_response()[0].strftime("%Y-%m-%d") # Fetches latest date from the xlsx. Fails if no xlsx -> except below
-			
-			if date != xlsx_date: # If not 3PM but xlsx is out of date (!= to irl date), update.
+			get_write_data(ontario_csv_url) # Updates data on the csv file
+			printC("Fetched the CSV.", "green")
+			cases = cases()
+			count = int(cases[-1])
+		except:
+			printC("Cannot fetch CSV from data.ontario.ca. Returning last-fetched data to card.", "red")
+			cases = cases()
+			count = int(cases[-1])
+
+	else: # -- If not 11:00AM -- #
+		printC("Not 11 AM yet. Looking to see if you have the most current COVID data...", "yellow")
+		try:
+			csv_date = dates() # Fetches latest date from the csv. Fails if no csv -> except below
+			if date != csv_date: # If not 11 AM but csv is out of date (!= to irl date), update.
 				printC("You do not have the latest COVID-data. Updating data now...", "yellow")
-				get_response(excel_url)
-				count = parse_response()[1]
-			   
-				if date != xlsx_date: # Checks again if up-to-date
-					printC("MLHU has not updated their data yet!", "yellow")
-				else:
-					printC("Sucessfully fetched new data!", "green")
-					
+				get_write_data(ontario_csv_url)
+				cases = cases()
+				count = int(cases[-1])
+				printC("Sucessfully fetched new data!", "green")
 			else:
 				printC("Your COVID data is up-to-date. Returning that to the card.", "green")
-				count = parse_response()[1]
-		except: # -- If there's no xlsx file present -- #
-			printC("No london_covid.xlsx file is found! Downloading one right now...", "yellow")
-			get_response(excel_url)
-			count = parse_response()[1]
+				cases = cases()
+				count = int(cases[-1])
+		except: # -- If there's no csv file present -- #
+			printC("No ontario_covid.csv file is found! Downloading one right now...", "yellow")
+			get_write_data(ontario_csv_url)
+			cases = cases()
+			count = int(cases[-1])
 
 		maintext = "New\nMiddlesex-London\nCOVID Cases Today" # Spaces to fix centering
-		alttext = "There are " + str(count) + " new cases of COVID-19 in the Middlesex Region today."
+		alttext = "There are " + str(count) + " new cases of COVID-19 in Middlesex-London today."
 
 	return count, maintext, alttext
 #### YOUR CODE HERE ####
