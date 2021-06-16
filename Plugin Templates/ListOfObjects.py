@@ -44,7 +44,9 @@ def GetCardData():
 		fullImagePath = file + "/" + folder + "/" + fileWithin # File location of image
 		return fullImagePath
 		
-	itemList = [Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,255,255), bgFillAmt=0.5), Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,255,255), bgFillAmt=0.5), Item("item", "C:\\Users\\mycoo\\OneDrive\\Pictures\\deathstar.png", (255,0,0), bgFillAmt=0.5)]
+	# Sample code
+	#itemList = [Item("item", "/path/to/image", (255,255,255), bgFillAmt=0.5), Item("item", "/path/to/image/2", (255,255,255), bgFillAmt=0.5)]
+	itemList = []
 	maintext = "Some Items"
 	alttext = "Whatever you want!"
 	
