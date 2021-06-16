@@ -50,9 +50,9 @@ def GetCardData():
 
 	# -- Icon picker for player state -- #
 	def player_state_icon(player_state):
-		if player_state == 'PLAYING' or player_state == 'BUFFERING' or player_state == 'UNKNOWN':
+		if player_state == 'PLAYING' or player_state == 'BUFFERING':
 			player_icon_path = GetPathWithinNeighbouringFolder("play_icon.png", "Chromecast Icons")
-		elif player_state == 'PAUSED':
+		elif player_state == 'PAUSED' or player_state == 'UNKNOWN':
 			player_icon_path = GetPathWithinNeighbouringFolder("pause_icon.png", "Chromecast Icons")
 		else:
 			player_icon_path = None
@@ -68,61 +68,66 @@ def GetCardData():
 			printC("Waiting chromecast " + chromecast.device.friendly_name + "....")
 			chromecast.wait(timeout=15)
 		return chromecasts, browser
-	
+
 	groupList = []
-	
+
 	# -- If pychromecast borks, crash the plugin -- #
 	import traceback
 	try:
 		chromecasts, browser = connect_chromecasts()
 	except:
 		logError("Pychromecast failed to initialze or connect to the chromecast(s)!", traceback.format_exc(), sourcename)
-		
+
 	browser.stop_discovery()
-	for chromecast in chromecasts:
-		if chromecast.status.status_text == '':
-			printC("Idling chromecast detected...Will not display it.", "yellow")
-			continue
-		else:
-			printC("Getting data from chromecast " + chromecast.device.friendly_name + "...", "cyan")
-			itemList = []
-
-			friendly_name = chromecast.device.friendly_name
-			display_name = chromecast.status.display_name
-			media_title = str(chromecast.media_controller.status.title)
-
-			# -- If none, print "nothing is playing" -- #
-			if media_title == None:
-                media_title = "Nothing is playing right now!"
+	for count, chromecast in enumerate(chromecasts): # To make interpreting seperate chromecasts in logs easier
+		# -- Tries to fetch data from cast device -- #
+		try:
+			printC("Trying to fetch data from chromecast " + str(count), "yellow")
+			if chromecast.status.status_text == '':
+				printC("Idling chromecast detected...Will not display it.", "yellow")
+				continue
 			else:
-                pass
+				printC("Getting data from chromecast " + chromecast.device.friendly_name + "...", "cyan")
+				itemList = []
 
-			device_icon = device_icon_picker(chromecast.device.model_name)
-			play_icon = player_state_icon(chromecast.media_controller.status.player_state)
+				friendly_name = chromecast.device.friendly_name
+				display_name = chromecast.status.display_name
+				media_title = str(chromecast.media_controller.status.title)
 
-			volume_level = chromecast.status.volume_level
-			printC("Sucessfully fetched volume level.", "green")
-
-			itemList.append(Item(chromecast.device.friendly_name + " volume", device_icon, volumecolor, bgFillAmt=volume_level))
-			printC("Sucessfully finish generating volume item", "green")
-
-			if play_icon != None:
-				if chromecast.media_controller.status.duration == None:
-					printC("The media is probably being live-streamed since there's no duration!", "yellow")
-					itemList.append(Item(chromecast.device.friendly_name + " play state", play_icon, streamingcolor, bgFillAmt=1.0))
-
+				# -- If none, print "nothing is playing" -- #
+				if media_title == None:
+					media_title = "Nothing is playing right now!"
 				else:
-					player_progress = chromecast.media_controller.status.current_time / chromecast.media_controller.status.duration
-					itemList.append(Item(chromecast.device.friendly_name + " play state", play_icon, playingcolor, bgFillAmt=player_progress))
-					printC("Sucessfully gathered player state icon.", "green")
+					pass
 
-			groupList.append(Group(friendly_name + " | " + display_name + "\n" + media_title, itemList))
-			printC("Sucessfully fetched all data from the cast device!", "green")
-			
-			printC("Disconnecting from " + friendly_name)
-			chromecast.disconnect()
-			printC("Disconnceted from " + friendly_name)
-	
+				device_icon = device_icon_picker(chromecast.device.model_name)
+				play_icon = player_state_icon(chromecast.media_controller.status.player_state)
+
+				volume_level = chromecast.status.volume_level
+				printC("Sucessfully fetched volume level.", "green")
+
+				itemList.append(Item(chromecast.device.friendly_name + " volume", device_icon, volumecolor, bgFillAmt=volume_level))
+				printC("Sucessfully finish generating volume item", "green")
+
+				if play_icon != None:
+					if chromecast.media_controller.status.duration == None:
+						printC("The media is probably being live-streamed since there's no duration!", "yellow")
+						itemList.append(Item(chromecast.device.friendly_name + " play state", play_icon, streamingcolor, bgFillAmt=1.0))
+
+					else:
+						player_progress = chromecast.media_controller.status.current_time / chromecast.media_controller.status.duration
+						itemList.append(Item(chromecast.device.friendly_name + " play state", play_icon, playingcolor, bgFillAmt=player_progress))
+						printC("Sucessfully gathered player state icon.", "green")
+
+				groupList.append(Group(friendly_name + " | " + display_name + "\n" + media_title, itemList))
+				printC("Sucessfully fetched all data from the cast device!", "green")
+
+				printC("Disconnecting from " + friendly_name)
+				chromecast.disconnect()
+				printC("Disconnceted from " + friendly_name)
+		except:
+			logError("Failed to fetch data from chromecast " + str(count) + ". Most likely failed to connect to it.", "", sourcename)
+
 	if groupList:
 		maintext = str(len(chromecasts)) + " Chromecasts Detected"
 		alttext = maintext + ". " + groupList[0].groupName
@@ -284,9 +289,9 @@ def GetPresets():
 	else:
 		SMARTFRAMEFOLDER = currentLocation
 	printC("SmartFrame is located in " + SMARTFRAMEFOLDER, "green")
-	
+
 	sys.path.append(SMARTFRAMEFOLDER)
-	
+
 	printC("Gathering colors...", "blue")
 	colorfile = open(SMARTFRAMEFOLDER + '/Colors.txt', 'r')
 	colorfileLines = colorfile.readlines()
@@ -297,7 +302,7 @@ def GetPresets():
 		else:
 			COLORS.append((int(line[0:3]), int(line[4:7]), int(line[8:11])))
 			printC("Added color " + line[0:3] + " " + line[4:7] + " " + line[8:11] + "!")
-			
+
 GetPresets()
 from ErrorLogger import logError
 ### SmartFrame.py calls this to get a card. I don't recommend editing this.
@@ -306,26 +311,26 @@ def GetCard():
 	# Generate card...
 	printC("Starting card generation...", "blue")
 	image, alttext, tilesX, tilesY = GenerateCard() # Calls the above function to get data
-	
+
 	# Check if card exists
 	if image and alttext and tilesX and tilesY:
 		printC("Finished generating card!...", "green")
-		
-		
+
+
 		# Setup output location
 		outputLocation = SMARTFRAMEFOLDER + "/Cards/" + sourcename + ".png"
 		printC("Will output to " + outputLocation, "cyan")
-		
+
 		# Save
 		image.save(outputLocation)
 		printC("Image saved to  " + outputLocation + "!", "green")
-		
+
 		from Card import Card
 		return Card(outputLocation, alttext, sourcename, tilesX, tilesY)
 	else:
 		# No cards
 		printC("No cards to return!...", "red")
 		return None
-	
+
 if __name__ == "__main__":
 	GetCard()
