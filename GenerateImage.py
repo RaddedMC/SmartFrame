@@ -87,6 +87,22 @@ def GenerateImage(cardsinstance, resx, resy, scale):
 		cardsy = math.floor((resy-maxclockheight)/pixelratio/100)
 		printG("This SmartFrame (" + str(resx) + "x" + str(resy)+ ") can fit a " + str(cardsx) + "x" + str(cardsy) + " grid of cards.", "yellow")
 		cardarray = [[False for x in range(cardsx)] for y in range(cardsy)] # False = unused, True = used
+		
+		# Display 1x1 card in time banner
+		try:
+			if len(cards) != 0:
+				for card in cards:
+					if card.tilesx == 1 and card.tilesy == 1:
+						printG("Displaying card " + card.sourcename + " in banner...", "cyan")
+						sizexy = maxclockheight
+						image = card.Image(sizexy, sizexy)
+						mainimage.paste(image, (round(mainimage.size[0]-(sizexy)),0))
+						printG("Card displayed successfully! Removing card from array...", "green")
+						cards.pop(cards.index(card))
+						break
+		except:
+			import traceback
+			logError("Error displaying a banner card! Did you move files around?", traceback.format_exc(), moduleName)
 			
 		nocards = False
 		# Loop through each x and y.
@@ -157,8 +173,12 @@ def GenerateImage(cardsinstance, resx, resy, scale):
 						xend = (pixelratio*(100)*currentcard.tilesx)+xstart
 						yend = (pixelratio*(100)*currentcard.tilesy)+ystart
 						#maindraw.rectangle([(xstart,ystart),(xend, yend)], fill=colors[4], outline=colors[0], width = round(2*pixelratio)) # Debug
-						image = currentcard.Image(xend-xstart, yend-ystart)
-						mainimage.paste(image, (round(xstart),round(ystart)))
+						try:
+							image = currentcard.Image(xend-xstart, yend-ystart)
+							mainimage.paste(image, (round(xstart),round(ystart)))
+						except:
+							import traceback
+							logError("Error displaying a card! Did you move files around?", traceback.format_exc(), moduleName)
 						
 						# pop card from array!
 						printG("Card placed successfully! Removing from array...", "green")
