@@ -135,7 +135,7 @@ def GetCardData():
 def GenerateCard():
 	imageFile, background, alttext = GetCardData()
 	
-	if imageFile:
+	if not imageFile == "" or imageFile:
 		try:
 			printC("Opening image..." , "blue")
 			icon = Image.open(imageFile)
@@ -144,7 +144,10 @@ def GenerateCard():
 			import traceback
 			logError("Unable to open image! Check the traceback.", traceback.format_exc(), sourcename)
 			return None, None, None, None
-
+	else:
+		printC("No image! Sending null data.", "red")
+		return None, None, None, None
+	
 	vertical = False
 	if icon.size[1] >= icon.size[0]:
 		# Tall image
