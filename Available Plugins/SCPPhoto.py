@@ -3,7 +3,9 @@
 # This plugin grabs a random photo from a Linux-based server with SCP enabled on your network and displays it.
 # SmartFrame is now one step closer to being a DumbFrame!
 
-# Setup: 
+# Setup: Enter your server's IP, username, password, and the path you want to scan for photos in the below variables.
+# This plugin does not scan recursively, only the root of the folder you specify in sshPath.
+# Currently this script only supports Linux servers, but you do *not* need SMB. SSH and SFTP are sufficient.
 
 # Required deps: Pillow, termcolor, paramiko
 
