@@ -20,7 +20,7 @@
 # KEY FILES: config.cfg
 #            Plugins/
 
-builddate = "2021 - 05 - 28"
+builddate = "2021 - 07 - 04"
 moduleName = "SmartFrame Main"
 
 # Imports
@@ -332,6 +332,7 @@ def runPlugin(file, send_end):
 		
 	finally:
 		# Regardless of whether everything works, return what you can, print what was outputted (including errors), and give back stdout
+		printS("Plugin " + file + " finished!", "green")
 		sys.stdout = sys.__stdout__
 		print(stdoutStream.getvalue())
 		send_end.send(plugincards)
