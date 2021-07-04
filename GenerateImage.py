@@ -133,9 +133,9 @@ def GenerateImage(cardsinstance, resx, resy, scale):
 						printG("Trying card ["+str(i)+"] " + currentcard.sourcename + " with size ("+ str(currentcard.tilesx) + ", " + str(currentcard.tilesy)+ ") in area " + currentcardrange + "...", "blue")
 						used = False
 						for cardy in range(y,y+currentcard.tilesy):
-							for cardx in range(x,x+currentcard.tilesx):
+							for cardx in range(x,x+currentcard.tilesx-1):
 								try:
-									if cardarray[cardy][cardx]:
+									if cardarray[cardy][cardx] == True:
 										# If card doesn't fit, try next card
 										used = True
 								except IndexError:
