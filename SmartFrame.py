@@ -24,7 +24,7 @@ builddate = "2021 - 05 - 28"
 moduleName = "SmartFrame Main"
 
 # Imports
-import os, time
+import os, time, sys
 from consolemenu import *
 from consolemenu.items import *
 from Card import Card
@@ -32,6 +32,7 @@ from GenerateImage import GenerateImage
 from datetime import datetime
 from datetime import timedelta
 from ErrorLogger import logError
+import multiprocessing
 
 
 def printS(string, color = "white"):
@@ -299,8 +300,41 @@ def Config():
 	
 	print("Run SmartFrame again to get started.")
 
+def runPlugin(file, send_end):
+
+	# Get and run modules
+	import importlib.util
+	from io import StringIO
+	spec = importlib.util.spec_from_file_location("module.name", "Plugins/" + file)
+	plugin = importlib.util.module_from_spec(spec)
 	
+	printS("Starting plugin " + file, "cyan")
 	
+	# Capture stdout to keep plugin output organized
+	sys.stdout = stdoutStream = StringIO()
+	
+	# Check for compile errors
+	try:
+		spec.loader.exec_module(plugin)
+		
+		# Run plugin
+		try:
+			plugincards = plugin.GetCard()
+		except:
+			import traceback
+			logError("Runtime error with plugin " + file + "!", traceback.format_exc(), moduleName)
+			plugincards = None
+		
+	except:
+		import traceback
+		logError("There's a compiler error with plugin " + file + "! Contact the developer for this plugin or fix the error yourself and make a pull request." + file + "!", traceback.format_exc(), moduleName)
+		plugincards=None
+		
+	finally:
+		# Regardless of whether everything works, return what you can, print what was outputted (including errors), and give back stdout
+		sys.stdout = sys.__stdout__
+		print(stdoutStream.getvalue())
+		send_end.send(plugincards)
 	
 # Main
 def main():
@@ -346,42 +380,40 @@ def main():
 		cards = []
 		files = os.listdir("Plugins/")
 		
-		#Get list of plugins in plugin folder
+		# Get list of plugins in plugin folder and create processes for them
+		tasks = []
+		pipe_list = []
 		if files:
 			for file in files:
 				if file.endswith(".py"):
-					printS("Running plugin " + file, "yellow")
+					printS("Assembling plugin " + file, "yellow")
+					recv_end, send_end = multiprocessing.Pipe(False)
+					p = multiprocessing.Process(target=runPlugin, args=(file, send_end))
+					tasks.append(p)
+					pipe_list.append(recv_end)
+					p.start()
 					
-					# Get and run modules
-					import importlib.util
-					spec = importlib.util.spec_from_file_location("module.name", "Plugins/" + file)
-					plugin = importlib.util.module_from_spec(spec)
-					
-					try:
-						spec.loader.exec_module(plugin)
-					except:
-						import traceback
-						logError("There's a compiler error with plugin " + file + "! Contact the developer for this plugin or fix the error yourself and make a pull request." + file + "!", traceback.format_exc(), moduleName)
-						continue
-					
-					# Run plugin
-					try:
-						plugincards = plugin.GetCard()
-					except:
-						import traceback
-						logError("Runtime error with plugin " + file + "!", traceback.format_exc(), moduleName)
-						continue
-					
-					if isinstance(plugincards, list):
-						for card in plugincards:
-							cards.append(card) # Append all new cards to variable cards
-							printS("Plugin " + file + " ran successfully!", "green")
-					elif isinstance(plugincards, Card):
-						cards.append(plugincards)
 		else:
 			printS("Error: There are no plugins! Please add some plugins before using SmartFrame.", "red")
 			exit(0)
-				 
+			
+		returnvalues = [x.recv() for x in pipe_list]
+		
+		for job in tasks:
+			job.join()
+			
+		printS("All plugins finished! Assembling output...", "green")
+		# Sort output from tasks
+		for value in returnvalues:
+			if isinstance(value, list):
+				for card in value:
+					cards.append(card) # Append all new cards to variable cards
+			elif isinstance(value, Card):
+				cards.append(value)
+			else:
+				continue
+				
+		printS("Cards assembled!", "green")
 				 
 		
 		# Output images
