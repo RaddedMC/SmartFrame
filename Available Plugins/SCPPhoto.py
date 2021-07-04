@@ -45,7 +45,7 @@ def GetCardData():
 	ssh = paramiko.SSHClient()
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 	try:
-		ssh.connect(sshIP, username=sshUsername, password=sshPWD)
+		ssh.connect(sshIP, username=sshUsername, password=sshPWD, timeout=1)
 	except:
 		import traceback
 		logError("Error connecting to server! Check the traceback.", traceback.format_exc(), sourcename)
@@ -227,7 +227,7 @@ def GenerateCard():
 			os.remove(imageFile)
 		except:
 			import traceback
-			logError("Unable to delete album art image! Check out the traceback!", traceback.format_exc(), sourcename)
+			logError("Unable to delete image! Check out the traceback!", traceback.format_exc(), sourcename)
 	else:
 		printC("No data! Sending null data.", "red")
 		return None, None, None, None

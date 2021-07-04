@@ -43,7 +43,7 @@ def GetCardData():
 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 	printC("Connecting to "+sshIP+"! ", "blue")
 	try:
-		ssh.connect(sshIP, username=sshUsername, password=sshPWD)
+		ssh.connect(sshIP, username=sshUsername, password=sshPWD, timeout=1)
 	except:
 		import traceback
 		logError("Error connecting to server! Check the traceback.", traceback.format_exc(), sourcename)
