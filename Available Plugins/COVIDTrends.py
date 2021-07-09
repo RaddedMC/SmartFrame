@@ -64,7 +64,7 @@ def GetCardData():
 			with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
 				data = list(reader(f))
 				london_cases = [i[16] for  i in data[400::]] # London Case List
-				ontario_cases = [i[35] for  i in data[400::]] # Ontario sCase List
+				ontario_cases = [i[35] for  i in data[400::]] # Ontario Case List
 				f.close()
 			if csv_date != date:
 				printC("COVID CSV is out of date. Downloading new file...", "yellow")
@@ -303,5 +303,3 @@ def GetCard():
 if __name__ == "__main__":
 	GetCard()
 	
-if counter > 10:
-	break
