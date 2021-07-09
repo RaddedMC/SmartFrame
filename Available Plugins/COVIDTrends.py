@@ -54,6 +54,9 @@ def GetCardData():
 				f.close()
 				return csv_date
 		
+		london_cases = []
+		ontario_cases = []
+		
 		try:
 			printC("Attempting to read CSV", "yellow")
 			csv_date = dates()
@@ -61,7 +64,7 @@ def GetCardData():
 			with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
 				data = list(reader(f))
 				london_cases = [i[16] for  i in data[400::]] # London Case List
-				ontario_cases = [i[35] for  i in data[400::]] # Ontario Case List
+				ontario_cases = [i[35] for  i in data[400::]] # Ontario sCase List
 				f.close()
 			if csv_date != date:
 				printC("COVID CSV is out of date. Downloading new file...", "yellow")
@@ -75,7 +78,6 @@ def GetCardData():
 			printC("Downloaded CSV file.", "yellow")
 			trend_calculator()
 			
-				
 		# -- Differences -- #
 		london_diff = int(london_cases[-1]) - int(london_cases[-2]) # Today and Yesterday 
 		ontario_diff = int(ontario_cases[-1]) - int(ontario_cases[-2]) # Today and Yesterday
@@ -300,3 +302,6 @@ def GetCard():
 	
 if __name__ == "__main__":
 	GetCard()
+	
+if counter > 10:
+	break
