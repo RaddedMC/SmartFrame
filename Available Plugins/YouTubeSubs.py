@@ -24,8 +24,8 @@ COLORS = []
 #### YOUR CODE HERE ####
 def GetCardData():
 	count = 21
-	maintext = "Some data"
-	alttext = "Whatever you want!"
+	maintext = ""
+	alttext = ""
 	
 	# Code inspired by https://github.com/howCodeORG/Python-Sub-Count/blob/master/subs.py
 	import urllib.request
@@ -37,6 +37,7 @@ def GetCardData():
 	name = json.loads(namedata)["items"][0]["brandingSettings"]["channel"]["title"]
 	count = int(subs)
 	maintext = "Subscribers\n"+name
+	alttext = "Channel " + name + " has " + str(subs) + " subscribers!"
 	
 	return count, maintext, alttext
 #### YOUR CODE HERE ####
