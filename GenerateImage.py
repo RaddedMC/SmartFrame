@@ -129,11 +129,18 @@ def GenerateImage(cardsinstance, resx, resy, scale):
 					enoughspace = True
 					# Loop through all cards to find one that fits
 					for i, currentcard in enumerate(cards):
-						currentcardrange = "[ (" + str(x) + ", " + str(y)+"), (" + str(x+currentcard.tilesx-1) + ", " + str(y+currentcard.tilesy-1) + ") ]"
+						enoughspace = True
+						rangeXstart = x
+						rangeYstart = y
+						rangeXend = x+currentcard.tilesx-1
+						rangeYend = y+currentcard.tilesy-1
+					
+						currentcardrange = "[ (" + str(rangeXstart) + ", " + str(rangeYstart)+"), (" + str(rangeXend) + ", " + str(rangeYend) + ") ]"
 						printG("Trying card ["+str(i)+"] " + currentcard.sourcename + " with size ("+ str(currentcard.tilesx) + ", " + str(currentcard.tilesy)+ ") in area " + currentcardrange + "...", "blue")
 						used = False
-						for cardy in range(y,y+currentcard.tilesy):
-							for cardx in range(x,x+currentcard.tilesx-1):
+						for cardy in range(rangeYstart,rangeYend+1): # +1 because the end case needs to be tested too
+							for cardx in range(rangeXstart,rangeXend+1):
+								#printG("Testing ("+str(cardx) + ", " + str(cardy) + ") !","cyan")
 								try:
 									if cardarray[cardy][cardx] == True:
 										# If card doesn't fit, try next card
@@ -149,8 +156,8 @@ def GenerateImage(cardsinstance, resx, resy, scale):
 								break
 						if not used:
 							break
-						if used and i == len(cards)-2:
-							enoughspace = False    
+						else:
+							enoughspace = False
 					if not enoughspace:
 						# If there's not enough space for any card, iterate to next space:
 						printG("Not enough space for any card in (" + str(x) + ", " + str(y) + ")!", "red")
