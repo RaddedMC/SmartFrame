@@ -13,8 +13,8 @@ sourcename = "Forecast"
 OWM_api_key = "b4f6dd2094bdd5048ce9025a901553df"
 mapbox_api_key = "pk.eyJ1IjoiY2Fubm9saSIsImEiOiJja21udzZpN3AxeXJmMm9zN3BuZGR3aTE0In0.w62dorEJ-QKwtJSswhRVaQ"
 base_url_geocode = "https://api.mapbox.com/geocoding/v5/mapbox.places/"
-city_name = "London"
-country = "CA"
+city_name = ""
+country = ""
 
 # -- Initial module imports -- #
 from PIL import Image, ImageFont, ImageDraw
