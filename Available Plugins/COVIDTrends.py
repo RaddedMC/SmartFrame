@@ -83,18 +83,18 @@ def GetCardData():
 		ontario_diff = int(ontario_cases[-1]) - int(ontario_cases[-2]) # Today and Yesterday
 
 		if london_diff > 0:
-			london_diff = "+" + str(london_diff) + " more | London"
+			london_diff = "+" + str(london_diff) + "\nLondon"
 		elif london_diff < 0:
-			london_diff = str(london_diff) + " less | London"
+			london_diff = str(london_diff) + "\nLondon"
 		elif london_diff == 0:
-			london_diff = "*No change | London"
+			london_diff = "*No change\nLondon"
 	
 		if ontario_diff > 0:
-			ontario_diff = "+" + str(ontario_diff) + " more | Ontario"
+			ontario_diff = "+" + str(ontario_diff) + "\nOntario"
 		elif ontario_diff < 0:
-			ontario_diff = str(ontario_diff) + " less | Ontario"
+			ontario_diff = str(ontario_diff) + "\nOntario"
 		elif ontario_diff == 0:
-			ontario_diff = "*No change | Ontario"
+			ontario_diff = "*No change\nOntario"
 
 		return london_diff, ontario_diff
 	
@@ -124,8 +124,7 @@ def GenerateCard():
 	if groupList:
 		# Calculate card height
 		tilesX = 4
-		tilesY = math.floor(len(groupList)/2)+1
-		printC("There are " + str(len(groupList)) + " groups in this Card. The card is " + str(tilesY) + " units high.", "yellow")
+		tilesY = 1
 		
 		# Stuff
 		dpifactor = 200 # Change this to increase card resolution. Don't go too high!!!
@@ -140,18 +139,17 @@ def GenerateCard():
 		
 		imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=backgroundcolor)
 		padding = dpifactor/50
-		top = padding
+		left = padding
 		for group in groupList:
 			printC("Getting Image for group " + group.groupName)
 			try:
-				groupImg = group.Image((round(imageresx-(padding*2)),round(11*dpifactor/24)), dpifactor/10)
+				groupImg = group.Image((round((imageresx/2)-(padding*2)),round(imageresy-(padding*4))), dpifactor/10)
 			except:
 				import traceback
 				logError("Unknown error with group " + group.groupName + "! Moving on to next group...", traceback.format_exc(), sourcename)
 				continue
-			image.paste(groupImg, (round(padding), round(top)), mask = groupImg)
-			top += (11*dpifactor/24) + padding
-		imagedraw.text((round(padding), round(top)), maintext, fill=maintextcolor, font=maintextfont)
+			image.paste(groupImg, (round(left), round(padding*2)), mask = groupImg)
+			left += imageresx/2
 	else:
 		printC("No data! Sending null data.", "red")
 		return None, None, None, None
@@ -217,21 +215,24 @@ class Group:
 		imagedraw.rounded_rectangle([(0,0),xyres], fill=(0,0,0, 100), radius=cornerrad)
 
 		# Overlay Items
-		padding = round(((2*xyres[0]/3)/6)/20)
-		imageWidth = round(((2*xyres[0]/3)/6)-(padding*2))
-		leftmost = padding
-		for item in self.itemArray:
-			try:
-				itemImage = item.Image(imageWidth, cornerrad)
-			except:
-				import traceback
-				logError("Unknown error with image " + image.imageName + "! Moving on to next image...", traceback.format_exc(), sourcename)
-				continue
-			image.paste(itemImage, (leftmost, padding), mask=itemImage)
-			leftmost += imageWidth+(padding)
-		fontscalefactor = 15 / (self.groupName.count("\n")+1)
-		maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", round(fontscalefactor*padding))
-		imagedraw.text((leftmost+padding, 0), self.groupName, font=maintextfont, fill=COLORS[1])
+		padding = round(((2*xyres[0]/3)/6)/10)
+		imageWidth = round(((3.5*xyres[0]/3)/6)-(padding*2))
+		mainfontscalefactor = 40 / (self.groupName.count("\n")+1)
+		maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", round(mainfontscalefactor*padding))
+		secondaryfontscalefactor = mainfontscalefactor / 2
+		secondarytextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", round(secondaryfontscalefactor*padding))
+		splitdex = self.groupName.find("\n")
+		imagedraw.text((padding*3, padding), self.groupName[:splitdex], font=maintextfont, fill=COLORS[1])
+		imagedraw.text((padding*3, mainfontscalefactor*padding/2), self.groupName[splitdex:], font=secondarytextfont, fill=COLORS[1])
+		leftmost = xyres[0]-imageWidth-(padding*2)
+		
+		item = self.itemArray[0]
+		try:
+			itemImage = item.Image(imageWidth, cornerrad)
+		except:
+			import traceback
+			logError("Unknown error with image " + image.imageName + "! Moving on to next image...", traceback.format_exc(), sourcename)
+		image.paste(itemImage, (round(leftmost), round(xyres[1]/3)), mask=itemImage)
 
 		return image
 
