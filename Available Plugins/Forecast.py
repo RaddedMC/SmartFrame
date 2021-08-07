@@ -15,7 +15,7 @@ mapbox_api_key = "pk.eyJ1IjoiY2Fubm9saSIsImEiOiJja21udzZpN3AxeXJmMm9zN3BuZGR3aTE
 base_url_geocode = "https://api.mapbox.com/geocoding/v5/mapbox.places/"
 city_name = "London"
 country = "CA"
-unit = ""
+unit = "metric"
 
 # -- Initial module imports -- #
 from PIL import Image, ImageFont, ImageDraw
@@ -38,19 +38,22 @@ def GetCardData():
 		return fullImagePath
 	
 	global unit
+
 	# -- Checks if user entered a valid unit system -- #
 	printC("Checking unit system...", "yellow")
 	if unit == "metric":
 		printC("Metric detected!", "green")
+		symbol = 'C' # Sets C has char for Celsius
 		pass
 
 	elif unit == "imperial":
 		printC("Imperial detected!", "green")
+		symbol = 'F' # Sets F has char for Fahrenheit 
 		pass
-
 	else:
 		printC("Entered unit system is either non-existent or is invalid! Falling back to metric.", "yellow")
 		unit = "metric"
+		symbol = 'C'
 	
 	groupList = []
 	
@@ -78,7 +81,7 @@ def GetCardData():
 		exit() # Quits process
 
 	# -- Assembles url to request weather data -- #
-	forecast_data_url = "https://api.openweathermap.org/data/2.5/onecall?lat=" + str(latitude) + "&lon=" + str(longitude) + "&exclude=hourly,minutely,current,alerts&units=metric&appid=" + OWM_api_key
+	forecast_data_url = "https://api.openweathermap.org/data/2.5/onecall?lat=" + str(latitude) + "&lon=" + str(longitude) + "&exclude=hourly,minutely,current,alerts&units=" + unit + "&appid=" + OWM_api_key
 
 	# print(forecast_data_url) # Debugging purposes 
 
@@ -103,8 +106,8 @@ def GetCardData():
 		# -- Weather variables -- #
 		try:
 			printC("Attempting to parse forecast response...", "yellow")
-			max_temp = str(round(day['temp']['max'])) + chr(176) + "C"
-			min_temp = str(round(day['temp']['min'])) + chr(176) + "C"
+			max_temp = str(round(day['temp']['max'])) + chr(176) + symbol # uses char set above for unit
+			min_temp = str(round(day['temp']['min'])) + chr(176) + symbol 
 			condition = day['weather'][0]['description'].title()
 			icon_url = "http://openweathermap.org/img/wn/" + day['weather'][0]['icon'] + "@2x.png"
 			printC("Sucessfully parsed forecast response!", "green")
@@ -129,8 +132,6 @@ def GetCardData():
 
 	return groupList, maintext, alttext
 ### YOUR CODE HERE ###
-
-
 
 def GenerateCard():
 	
