@@ -57,6 +57,7 @@ def GetCardData():
 		london_cases = []
 		ontario_cases = []
 		
+		# -- Date and csv currency logic -- #
 		try:
 			printC("Attempting to read CSV", "yellow")
 			csv_date = dates()
@@ -82,19 +83,22 @@ def GetCardData():
 		london_diff = int(london_cases[-1]) - int(london_cases[-2]) # Today and Yesterday 
 		ontario_diff = int(ontario_cases[-1]) - int(ontario_cases[-2]) # Today and Yesterday
 
+		london_today = london_cases[-1] + " new cases" # New cases 
+		ontario_today = ontario_cases[-1] + " new cases" # New cases
+
 		if london_diff > 0:
-			london_diff = "+" + str(london_diff) + "\nLondon"
+			london_diff = "+" + str(london_diff) + "\nLondon\n" + london_today
 		elif london_diff < 0:
-			london_diff = str(london_diff) + "\nLondon"
+			london_diff = str(london_diff) + "\nLondon\n" + london_today
 		elif london_diff == 0:
-			london_diff = "*No change\nLondon"
+			london_diff = "*No change\nLondon\n" + london_today
 	
 		if ontario_diff > 0:
-			ontario_diff = "+" + str(ontario_diff) + "\nOntario"
+			ontario_diff = "+" + str(ontario_diff) + "\nOntario\n" + ontario_today
 		elif ontario_diff < 0:
-			ontario_diff = str(ontario_diff) + "\nOntario"
+			ontario_diff = str(ontario_diff) + "\nOntario\n" + ontario_today
 		elif ontario_diff == 0:
-			ontario_diff = "*No change\nOntario"
+			ontario_diff = "*No change\nOntario\n" + ontario_today
 
 		return london_diff, ontario_diff
 	
