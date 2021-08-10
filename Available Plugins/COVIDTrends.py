@@ -1,13 +1,16 @@
 #!/usr/bin/python3
 # RaddedMC's SmartFrame v2 -- COVIDTrends.py by @Raminh05
 # This is a plugin to display Rate of Change Increases/Decreases for COVID cases in the MLHU + The Province of Ontario
-# COVID Data from the Government of Ontario / The Provincial Ministry of Health 
+# COVID Data from the Government of Ontario / The Provincial Ministry of Health
+# Time interval option lets plugin show up every 10 minutes
 
 # THIS PLUGIN REQUIRES BOTH
 # Required deps: Pillow, termcolor, csv, datetime, requests (deps for this plugin)
 # Required files: The COVID-Trends-Icons folder's content
 
 sourcename = "COVIDTrends"
+time_interval_option =  # true or false
+
 
 from PIL import Image, ImageFont, ImageDraw
 import os
@@ -24,6 +27,23 @@ COLORS = []
 def GetCardData():
 	now = datetime.now()
 	date = now.strftime("%Y-%m-%d")
+	minute = int(now.strftime("%M"))
+
+	# -- Time interval logic -- #
+	global time_interval_option
+
+	minute_list = [00, 10, 20, 30, 40, 50]
+
+	if time_interval_option:
+		if minute in minute_list:
+			pass
+		else:
+			printC("Not the time yet!")
+			exit()
+	else:
+		pass
+		
+
 	
 	def GetPathWithinNeighbouringFolder(fileWithin, folder):
 		file = __file__.replace('\\', '/') # Remove this if you use a specific file path for your image or some other method.
