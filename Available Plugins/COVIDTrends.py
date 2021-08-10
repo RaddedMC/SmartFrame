@@ -43,8 +43,6 @@ def GetCardData():
 	else:
 		pass
 		
-
-	
 	def GetPathWithinNeighbouringFolder(fileWithin, folder):
 		file = __file__.replace('\\', '/') # Remove this if you use a specific file path for your image or some other method.
 		index = file.rfind("/")
