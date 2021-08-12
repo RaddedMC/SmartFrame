@@ -7,6 +7,7 @@
 # Icon fetching is super inefficient
 
 # Required deps: Pillow, termcolor, wget, requests, json, datetime, calendar
+# Required files: Paste the Forecast-Icons folder in /Plugins (or else the plugin would crash) 
 
 # -- User-definable variables -- # 
 sourcename = "Forecast"
@@ -60,9 +61,10 @@ def GetCardData():
 	maintext = "Forecast"
 	alttext = "Whatever you want!"
 	
+	# -- Mapbox URL -- #
 	complete_url_geo = base_url_geocode + city_name + ".json?country=" + country + "&access_token=" + mapbox_api_key
 	
-
+	# -- Requests geocoding information -- #
 	geo = requests.get(complete_url_geo)
 	x_geo = geo.json()
 
@@ -104,6 +106,7 @@ def GetCardData():
 		strdate = datetime_date.strftime('%Y-%m-%d') # Converts datetime value to string
 
 		# -- Weather variables -- #
+		# -- Attempts to parse it in try-except block -- #
 		try:
 			printC("Attempting to parse forecast response...", "yellow")
 			max_temp = str(round(day['temp']['max'])) + chr(176) + symbol # uses char set above for unit

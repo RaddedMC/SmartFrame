@@ -6,6 +6,7 @@
 # -- THIS IS A WORK IN PROGRESS! EXPECT A TON OF BUGS. -- #
 
 # -- Bugs so far -- #
+# (CRITICAL) ChromecastList crashes/locks up after a certain time running. This might have to do something with the PyChromecast module
 # Fetching media title from casting devices is still very borked
 # Some graphical glitches with the image generation
 
