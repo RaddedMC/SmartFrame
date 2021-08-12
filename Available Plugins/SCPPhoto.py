@@ -135,7 +135,7 @@ def GetCardData():
 def GenerateCard():
 	imageFile, background, alttext = GetCardData()
 	
-	if not imageFile == "" or imageFile:
+	if not imageFile == "" and imageFile:
 		try:
 			printC("Opening image..." , "blue")
 			icon = Image.open(imageFile)
