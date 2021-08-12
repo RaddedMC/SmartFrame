@@ -20,7 +20,7 @@
 # KEY FILES: config.cfg
 #            Plugins/
 
-builddate = "2021 - 07 - 04"
+builddate = "2021 - 08 - 12"
 moduleName = "SmartFrame Main"
 
 # Imports
@@ -272,7 +272,7 @@ def Config():
 			4: "exit"
 		}
 		if not options.get(menchoice) == "exit":
-			config += "# Refresh time (seconds): Higher is better to prevent API spam, lower gives more up-to-date info\n"
+			config += "# Refresh time (seconds): Higher is better to prevent API spam, lower gives more up-to-date info. NOTE: No matter your Refresh Time, SmartFrame cannot run faster than your plugins can generate information. This value simply affects the sleep timer at the end of generating a photo.\n"
 			config += options.get(menchoice)
 			
 			config += "# Use this area to set up output types. Start with the output resolution in the form 1920x1080s4, where 4 is the scale factor..\n"
