@@ -29,17 +29,8 @@ def GetCardData():
 	import requests
 	from datetime import datetime
 
-	ontario_csv_url = 'https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e6/resource/8a88fe6d-d8fb-41a3-9d04-f0550a44999f/download/daily_change_in_cases_by_phu.csv'
 	now = datetime.now()
-	time = now.strftime("%H:%M")
 	date = now.strftime("%Y-%m-%d")
-
-	# -- Fetches csv. -- #
-	def get_write_data(ontario_csv_url):
-		r = requests.get(ontario_csv_url)
-		with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'wb') as f:
-			f.write(r.content)
-			f.close()
 
 	# -- Parses and returns case figures -- #
 	def cases():
@@ -48,7 +39,7 @@ def GetCardData():
 			cases = [i[16] for i in data[400::]] # Modifed from NewCovidCasesOntario to suit Middlesex region
 			f.close()
 			return cases
-
+		
 	def dates():
 		with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
 			data = list(reader(f))
