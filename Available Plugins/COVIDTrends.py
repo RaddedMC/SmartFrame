@@ -5,7 +5,7 @@
 # Time interval option lets plugin show up every 10 minutes
 
 # THIS PLUGIN REQUIRES BOTH
-# Required deps: Pillow, termcolor, csv, datetime, requests (deps for this plugin)
+# Required deps: Pillow, termcolor, csv, datetime, wget (deps for this plugin)
 # Required files: The COVID-Trends-Icons folder's content
 
 sourcename = "COVIDTrends"
@@ -18,7 +18,7 @@ import sys
 import math
 from csv import reader
 from datetime import datetime
-import requests
+import wget
 
 SMARTFRAMEFOLDER = ""
 COLORS = []
@@ -62,7 +62,7 @@ def GetCardData():
 			csv_date = list(reader(f))[-1][0]
 			return csv_date
 		
-		# -- Date and csv currency logic -- #
+		# -- Date and csv currency logic (re-written by @RaddedMC 08/13/2021) -- #
 
 		# Check if CSV Exists
 			# If yes, run date check
@@ -73,10 +73,7 @@ def GetCardData():
 
 		def downloadFile():
 			try:
-				r = requests.get('https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e6/resource/8a88fe6d-d8fb-41a3-9d04-f0550a44999f/download/daily_change_in_cases_by_phu.csv')
-				with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'wb') as f:
-					f.write(r.content)
-					f.close()
+				wget.download('https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e6/resource/8a88fe6d-d8fb-41a3-9d04-f0550a44999f/download/daily_change_in_cases_by_phu.csv', SMARTFRAMEFOLDER + "/ontario_covid.csv")
 			except:
 				import traceback
 				logError("Unable to download COVID information! Check the traceback.", traceback.format_exc(), sourcename)
