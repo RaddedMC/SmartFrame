@@ -58,42 +58,52 @@ def GetCardData():
 			csv_date = dates[-1]
 			return csv_date
 
+   # -- Date and csv currency logic (re-written by @RaddedMC 08/13/21) -- #
 
-   # -- Only run this plugin at 11 AM -- #
-	if time == "11:00":
-		# -- Check if the program can obtain CSV file -- #
+	# Check if CSV Exists
+		# If yes, run date check
+		# If no, download new one
+
+	# If date check successful, continue
+	# If date check failed, download new file (unless already downloaded)
+
+	def downloadFile():
 		try:
-			get_write_data(ontario_csv_url) # Updates data on the csv file
-			printC("Fetched the CSV.", "green")
-			cases = cases()
-			count = int(cases[-1])
+			r = requests.get('https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e6/resource/8a88fe6d-d8fb-41a3-9d04-f0550a44999f/download/daily_change_in_cases_by_phu.csv')
+			with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'wb') as f:
+				f.write(r.content)
+				f.close()
 		except:
-			printC("Cannot fetch CSV from data.ontario.ca. Returning last-fetched data to card.", "red")
-			cases = cases()
-			count = int(cases[-1])
-			
-	else: # -- If not 11:00AM -- #
-		printC("Not 11 AM yet. Looking to see if you have the most current COVID data...", "yellow")
-		try:
-			csv_date = dates() # Fetches latest date from the csv. Fails if no csv -> except below
-			if date != csv_date: # If not 11 AM but csv is out of date (!= to irl date), update.
-				printC("You do not have the latest COVID-data. Updating data now...", "yellow")
-				get_write_data(ontario_csv_url)
-				cases = cases()
-				count = int(cases[-1])
-				printC("Sucessfully fetched new data!", "green")
-			else:
-				printC("Your COVID data is up-to-date. Returning that to the card.", "green")
-				cases = cases()
-				count = int(cases[-1])
-		except: # -- If there's no csv file present -- #
-			printC("No ontario_covid.csv file is found! Downloading one right now...", "yellow")
-			get_write_data(ontario_csv_url)
-			cases = cases()
-			count = int(cases[-1])
+			import traceback
+			logError("Unable to download COVID information! Check the traceback.", traceback.format_exc(), sourcename)
+			raise ConnectionError
 
-		maintext = "New Ontario COVID\n    Cases Today" # Spaces to fix centering
-		alttext = "There are " + str(count) + " new cases of COVID-19 in Ontario today."
+	printC("Checking for a CSV file...", "blue")
+	if os.path.isfile(SMARTFRAMEFOLDER + "/ontario_covid.csv"):
+		printC("Found a file!", "green")
+		csv_date = dates()
+		print(csv_date)
+		if csv_date != date:
+			printC("File is out of date. Downloading a new one.", "red")
+			try:
+				downloadFile()
+			except ConnectionError:
+				return None, None
+		else:
+			printC("File is up to date!", "green")
+	else:
+		printC("File doesn't exist! Downloading a new one.", "red")
+		try:
+			downloadFile()
+		except ConnectionError:
+			return None, None
+	
+	# -- Fetches information from csv -- #
+	case = cases()
+	count = int(case[-1])
+
+	maintext = "New Ontario COVID\n    Cases Today" # Spaces to fix centering
+	alttext = "There are " + str(count) + " new cases of COVID-19 in Ontario today."
 
 
 	return count, maintext, alttext
