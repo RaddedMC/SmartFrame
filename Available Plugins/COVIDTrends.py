@@ -9,7 +9,7 @@
 # Required files: The COVID-Trends-Icons folder's content
 
 sourcename = "COVIDTrends"
-time_interval_option =  # true or false
+time_interval_option = False # true or false
 
 
 from PIL import Image, ImageFont, ImageDraw
@@ -52,51 +52,63 @@ def GetCardData():
 	
 	# -- Calculate COVID trend -- #
 	def trend_calculator():
-		# -- Fetches data from CSV -- #
-		# -- Logic to call data fetching function -- #
-		printC("Checking CSV", "yellow")
-		
-			# -- Fetches csv. -- #
-		def get_write_data(ontario_csv_url):
-			r = requests.get(ontario_csv_url)
-			with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'wb') as f:
-				f.write(r.content)
-				f.close()
-		
-		# Parses and returns dates 
-		def dates():
-			with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
-				data = list(reader(f))
-				csv_date = [i[0] for i in data[400::]]
-				csv_date = csv_date[-1]
-				f.close()
-				return csv_date
-		
+
 		london_cases = []
 		ontario_cases = []
+
+		# Parses and returns dates 
+		def dates():
+			f = open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r')
+			csv_date = list(reader(f))[-1][0]
+			return csv_date
 		
 		# -- Date and csv currency logic -- #
-		try:
-			printC("Attempting to read CSV", "yellow")
+
+		# Check if CSV Exists
+			# If yes, run date check
+			# If no, download new one
+
+		# If date check successful, continue
+		# If date check failed, download new file (unless already downloaded)
+
+		def downloadFile():
+			try:
+				r = requests.get('https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e6/resource/8a88fe6d-d8fb-41a3-9d04-f0550a44999f/download/daily_change_in_cases_by_phu.csv')
+				with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'wb') as f:
+					f.write(r.content)
+					f.close()
+			except:
+				import traceback
+				logError("Unable to download COVID information! Check the traceback.", traceback.format_exc(), sourcename)
+				raise ConnectionError
+
+		printC("Checking for a CSV file...", "blue")
+		if os.path.isfile(SMARTFRAMEFOLDER + "/ontario_covid.csv"):
+			printC("Found a file!", "green")
 			csv_date = dates()
 			print(csv_date)
-			with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
+			if csv_date != date:
+				printC("File is out of date. Downloading a new one.", "red")
+				try:
+					downloadFile()
+				except ConnectionError:
+					return None, None
+			else:
+				printC("File is up to date!", "green")
+		else:
+			printC("File doesn't exist! Downloading a new one.", "red")
+			try:
+				downloadFile()
+			except ConnectionError:
+				return None, None
+
+		printC("Grabbing COVID data from file...", "blue")
+		with open(SMARTFRAMEFOLDER + "/ontario_covid.csv", 'r') as f:
 				data = list(reader(f))
 				london_cases = [i[16] for  i in data[400::]] # London Case List
 				ontario_cases = [i[35] for  i in data[400::]] # Ontario Case List
 				f.close()
-			if csv_date != date:
-				printC("COVID CSV is out of date. Downloading new file...", "yellow")
-				get_write_data('https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e6/resource/8a88fe6d-d8fb-41a3-9d04-f0550a44999f/download/daily_change_in_cases_by_phu.csv')
-				trend_calculator()
-			else:
-				printC("Your COVID data is up-to-date!", "green")
-		except:
-			printC("CSV file not found. Downloading one...", "yellow")
-			get_write_data('https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e6/resource/8a88fe6d-d8fb-41a3-9d04-f0550a44999f/download/daily_change_in_cases_by_phu.csv')
-			printC("Downloaded CSV file.", "yellow")
-			trend_calculator()
-			
+
 		# -- Differences -- #
 		london_diff = int(london_cases[-1]) - int(london_cases[-2]) # Today and Yesterday 
 		ontario_diff = int(ontario_cases[-1]) - int(ontario_cases[-2]) # Today and Yesterday
@@ -109,7 +121,7 @@ def GetCardData():
 		elif london_diff < 0:
 			london_diff = str(london_diff) + "\nLondon\n" + london_today
 		elif london_diff == 0:
-			london_diff = "*No change\nLondon\n" + london_today
+			london_diff = "0\nLondon\n" + london_today
 	
 		if ontario_diff > 0:
 			ontario_diff = "+" + str(ontario_diff) + "\nOntario\n" + ontario_today
@@ -121,19 +133,24 @@ def GetCardData():
 		return london_diff, ontario_diff
 	
 	trends = trend_calculator()
+	if trends == (None, None):
+		return None, None, None
 
 	groupList = []
+	alttext = ""
 
 	for trend in trends:
 		if "-" in trend:
 			groupList.append(Group(trend, [Item("Down arrow", GetPathWithinNeighbouringFolder("Arrow-Down.png", "COVID-Trends-Icons"), (128,162,240), bgFillAmt=1.0)]))
+			alttext += (trend.replace("\n", " ") + " ")
 		elif "+" in trend:
 			groupList.append(Group(trend, [Item("Up arrow", GetPathWithinNeighbouringFolder("Arrow-Up.png", "COVID-Trends-Icons"), (240,128,128), bgFillAmt=1.0)]))
-		elif "*" in trend:
+			alttext += (trend.replace("\n", " ") + " ")
+		elif "0" in trend:
 			groupList.append(Group(trend, [Item("Zero arrow", GetPathWithinNeighbouringFolder("Arrow-Zero.png", "COVID-Trends-Icons"), (192,192,192), bgFillAmt=1.0)])) # No change in trend
+			alttext += (trend.replace("\n", " ") + " ")
 			
 	maintext = "COVID Trends"
-	alttext = "Whatever you want!"
 	
 	return groupList, maintext, alttext
 
@@ -244,8 +261,8 @@ class Group:
 		secondaryfontscalefactor = mainfontscalefactor / 2
 		secondarytextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", round(secondaryfontscalefactor*padding))
 		splitdex = self.groupName.find("\n")
-		imagedraw.text((padding*3, padding), self.groupName[:splitdex], font=maintextfont, fill=COLORS[1])
-		imagedraw.text((padding*3, mainfontscalefactor*padding/2), self.groupName[splitdex:], font=secondarytextfont, fill=COLORS[1])
+		imagedraw.text((padding*3, padding*2), self.groupName[:splitdex], font=maintextfont, fill=COLORS[1])
+		imagedraw.text((padding*3, mainfontscalefactor*padding), self.groupName[splitdex:], font=secondarytextfont, fill=COLORS[1])
 		leftmost = xyres[0]-imageWidth-(padding*2)
 		
 		item = self.itemArray[0]
