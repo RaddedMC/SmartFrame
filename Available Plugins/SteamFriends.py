@@ -9,7 +9,7 @@
 # Add any user-definable variables here! (API keys, usernames, etc.)
 sourcename = "Steam Friends"
 steamID = "" # PASTE YOUR STEAMID HERE
-steamKEY = "7867E9A78A0368B729835478837F5293" # Feel free to change at https://steamcommunity.com/dev/registerkey
+steamKEY = "7867E9A78A0368B729835478837F5293" # Feel free to change at https://steamcommunity.com/dev/apikey
 
 from PIL import Image, ImageFont, ImageDraw
 import os
@@ -23,6 +23,7 @@ import wget
 
 SMARTFRAMEFOLDER = ""
 COLORS = []
+width = 2
 
 ### YOUR CODE HERE ###
 def GetCardData():
@@ -93,7 +94,7 @@ def GetCardData():
 		printC("You are online!", "cyan")
 		onlineFriendCount-=1
 	printC(str(onlineFriendCount) + " of your friends are online out of " + str(friendCount) + ".", "green")
-	maintext = str(onlineFriendCount) + " of " + str(friendCount) + " friends online"
+	maintext = str(onlineFriendCount) + "/" + str(friendCount) + " online"
 	alttext = maintext
 
 	# Continue?
@@ -137,6 +138,9 @@ def GetCardData():
 			gameindex = gameidList.index(friendgameid)
 			gamename = gameList[gameindex][1]
 			gamephotolink = gameList[gameindex][2]
+			printC("A friend is playing a game! Setting Card width to 4 units.")
+			global width
+			width = 4
 
 		itemList = [Item("Profile Photo",wget.download(friendiconlink,SMARTFRAMEFOLDER+"/Plugins"),(0,0,0),0)]
 		if friendplaying:
@@ -167,7 +171,7 @@ def GenerateCard():
 	# If data is present
 	if groupList:
 		# Calculate card height
-		tilesX = 4
+		tilesX = width
 		tilesY = math.floor(len(groupList)/2)+1
 		printC("There are " + str(len(groupList)) + " groups in this Card. The card is " + str(tilesY) + " units high.", "yellow")
 		
@@ -179,7 +183,10 @@ def GenerateCard():
 		imagedraw = ImageDraw.Draw(image)
 		backgroundcolor = (32,34,40) # Change this to a 3-value tuple (255, 200, 100) to change the background colour!
 		maintextcolor = COLORS[1] # Change this to a 3-value tuple to change the text colour!
-		maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 15*round(dpifactor/50))
+		if width == 4:
+			maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 15*round(dpifactor/50))
+		else:
+			maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 10*round(dpifactor/50))
 	
 		
 		imagedraw.rectangle([(0,0), (imageresx, imageresy)], fill=backgroundcolor)
@@ -263,8 +270,12 @@ class Group:
 		imagedraw.rectangle([(0,0),xyres], fill=(67,73,83))
 
 		# Overlay Items
-		padding = round(((2*xyres[0]/3)/6)/20)
-		imageWidth = round(((2*xyres[0]/3)/6)-(padding*2))
+		if width == 4:
+			padding = round(((2*xyres[0]/3)/6)/20)
+			imageWidth = round(((2*xyres[0]/3)/6)-(padding*2))
+		else:
+			padding = round(((4*xyres[0]/3)/6)/20)
+			imageWidth = round(((4*xyres[0]/3)/6)-(padding*2))
 		leftmost = padding
 		for item in self.itemArray:
 			icon = Image.open(item.iconLocation)
@@ -278,7 +289,7 @@ class Group:
 				import traceback
 				logError("Unknown error with image " + image.imageName + "! Moving on to next image...", traceback.format_exc(), sourcename)
 				continue
-			image.paste(itemImage, (leftmost, padding), mask=itemImage)
+			image.paste(itemImage, (leftmost, padding*2), mask=itemImage)
 			leftmost += round(imsizex)+padding
 		fontscalefactor = 15 / (self.groupName.count("\n")+1)
 		maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", round(fontscalefactor*padding))
