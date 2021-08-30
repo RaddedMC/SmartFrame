@@ -70,7 +70,7 @@ def GetCardData():
 
 		# If date check successful, continue
 		# If date check failed, download new file (unless already downloaded)
-
+		
 		def downloadFile():
 			try:
 				wget.download('https://data.ontario.ca/dataset/f4f86e54-872d-43f8-8a86-3892fd3cb5e6/resource/8a88fe6d-d8fb-41a3-9d04-f0550a44999f/download/daily_change_in_cases_by_phu.csv', SMARTFRAMEFOLDER + "/ontario_covid.csv")
@@ -87,6 +87,8 @@ def GetCardData():
 			if csv_date != date:
 				printC("File is out of date. Downloading a new one.", "red")
 				try:
+					printC("Deleteing old csv file...", "yellow")
+					os.remove("ontario_covid.csv")
 					downloadFile()
 				except ConnectionError:
 					return None, None
