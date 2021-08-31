@@ -2,9 +2,8 @@
 
 
 
-## Welcome to the official SmartFrame project repository! This program is designed to grab your favourite data from all over the internet (weather, Smarthome/IoT, Spotify, Chromecast, etc) and display it in a neatly formatted image.
-
-![3D-rendered image of a SmartFrame setup](https://i.imgur.com/QwyHiOj.png)
+Welcome to the official SmartFrame project repository! This program is designed to grab your favourite data from all over the internet (weather, Smarthome/IoT, Spotify, Chromecast, etc) and display it in a neatly formatted image. | <img src="https://i.imgur.com/QwyHiOj.png" width ="400">
+--- | ---
 
 You can use SmartFrame to send data to displays like a [digital photo frame](https://youtu.be/YDr95xaEsK4), and any other internet-connected device with a display that is capable of running Python.
 See it in action [here!](https://youtu.be/uRSf9xuUPog)
