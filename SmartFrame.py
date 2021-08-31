@@ -20,13 +20,14 @@
 # KEY FILES: config.cfg
 #            Plugins/
 
-builddate = "2021 - 08 - 12"
+builddate = "2021 - 08 - 31"
 moduleName = "SmartFrame Main"
 
 # Imports
 import os, time, sys
 from consolemenu import *
 from consolemenu.items import *
+import termcolor
 from Card import Card
 from GenerateImage import GenerateImage
 from datetime import datetime
@@ -109,16 +110,20 @@ def Title():
 		printS("Unable to get terminal width. We are not running in a console.")
 		return None
 	print("\nSmartFrame | Options [-h / -c / -j / -t]\n")
-	print(("{0:<"+str(widthlimit)+"}").format("    SSS  MM   MM   AAA   RRR   TTTTT            |\               "))
-	print(("{0:<"+str(widthlimit)+"}").format("   S     M M M M  A   A  R  R    T              | \              "))
-	print(("{0:<"+str(widthlimit)+"}").format("    sSs  M  m  M  AaaaA  RrrR    T              |  }             "))
-	print(("{0:<"+str(widthlimit)+"}").format("      S  M     M  A   A  R R     T              | /              "))
-	print(("{0:<"+str(widthlimit)+"}").format("   SSS   M     M  A   A  R  R    T              |/               "))
-	print(("{0:<"+str(widthlimit)+"}").format("           /|                 FFFF  RRR    AAA   MM   MM  EEEE   "))
-	print(("{0:<"+str(widthlimit)+"}").format("          / |                 F     R  R  A   A  M M M M  E      "))
-	print(("{0:<"+str(widthlimit)+"}").format("         {  |                 Fff   RrrR  AaaaA  M  m  M  Eeee   "))
-	print(("{0:<"+str(widthlimit)+"}").format("          \ |                 F     R R   A   A  M     M  E      "))
-	print(("{0:<"+str(widthlimit)+"}").format("           \|                 F     R  R  A   A  M     M  EEEE   "))
+	print(("{0:<"+str(widthlimit)+"}").format("███████╗███╗   ███╗ █████╗ ██████╗ ████████╗   "+termcolor.colored("║█═══╗", "red")))
+	print(("{0:<"+str(widthlimit)+"}").format("██╔════╝████╗ ████║██╔══██╗██╔══██╗╚══██╔══╝   "+termcolor.colored("║████╚══╗", "red")))
+	print(("{0:<"+str(widthlimit)+"}").format("███████╗██╔████╔██║███████║██████╔╝   ██║      "+termcolor.colored("║███████║", "red")))
+	print(("{0:<"+str(widthlimit)+"}").format("╚════██║██║╚██╔╝██║██╔══██║██╔══██╗   ██║      "+termcolor.colored("║███████║", "red")))
+	print(("{0:<"+str(widthlimit)+"}").format("███████║██║ ╚═╝ ██║██║  ██║██║  ██║   ██║      "+termcolor.colored("║████╔══╝", "red")))
+	print(("{0:<"+str(widthlimit)+"}").format("╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝      "+termcolor.colored("║█═══╝", "red")))
+	print(("{0:<"+str(widthlimit)+"}").format("                                            "))
+	print(("{0:<"+str(widthlimit)+"}").format(termcolor.colored("   ╔═══█║", "blue")+"    ███████╗██████╗  █████╗ ███╗   ███╗███████╗ "))
+	print(("{0:<"+str(widthlimit)+"}").format(termcolor.colored("╔══╝████║", "blue")+"    ██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝ "))
+	print(("{0:<"+str(widthlimit)+"}").format(termcolor.colored("║███████║", "blue")+"    █████╗  ██████╔╝███████║██╔████╔██║█████╗   "))
+	print(("{0:<"+str(widthlimit)+"}").format(termcolor.colored("║███████║", "blue")+"    ██╔══╝  ██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝   "))
+	print(("{0:<"+str(widthlimit)+"}").format(termcolor.colored("╚══╗████║", "blue")+"    ██║     ██║  ██║██║  ██║██║ ╚═╝ ██║███████╗ "))
+	print(("{0:<"+str(widthlimit)+"}").format(termcolor.colored("   ╚═══█║", "blue")+"    ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ "))
+	print(("{0:>"+str(widthlimit)+"}").format("ascii art from https://manytools.org/hacker-tools/ascii-banner/ with some slight changes"))
 	print(("{0:<"+str(widthlimit)+"}").format("\_______________________________________________________________/"))
 	time.sleep(0.5)
 	print("By RaddedMC https://github.com/RaddedMC | https://youtube.com/RaddedMC | https://reddit.com/u/RaddedMC")
