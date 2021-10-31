@@ -211,7 +211,8 @@ def GenerateCard():
 	if (events):
 		# -- Gather photo meta --
 		alttext = "Outlook Calendar: " + calendarName + " - " + str(len(events)) + " events"
-		tilesY = math.ceil(len(events)/2)
+		tilesYScalable = math.ceil(len(events)/2)
+		tilesY = tilesYScalable if tilesYScalable < 4 else 4
 
 		tilesX = 4 # Change this to change tile size
 		dpifactor = 600 # Change this to increase card resolution. Don't go too high!!!
