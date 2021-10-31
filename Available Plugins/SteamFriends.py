@@ -120,7 +120,7 @@ def GetCardData():
 			printC("Failed to get game data for gameid " + game[1], "red")
 
 		StoreRequest = StoreRequest.json()
-		gameList[0] = [game[1], StoreRequest[game[1]]['data']['name'], StoreRequest[game[1]]['data']['header_image']]
+		gameList[game[0]] = [game[1], StoreRequest[game[1]]['data']['name'], StoreRequest[game[1]]['data']['header_image']]
 
 
 	printC("> All info collected! Organizing data...", "blue")
@@ -239,6 +239,7 @@ class Item:
 			image.paste(icon, (0,0), mask=icon)
 		except ValueError:
 			image.paste(icon, (0,0))
+
 		os.remove(self.iconLocation)
 
 		return image
