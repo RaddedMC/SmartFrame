@@ -19,7 +19,7 @@
 apiID = "" # See instructions to get an ID and secret at https://pypi.org/project/O365/#authentication
 apiSecret = ""
 calendarName = "Calendar" # Most Outlook accounts have their default calendar just named Calendar
-timerangehrs = 24 # Adjust to get a larger range of events, default is 4
+timerangehrs = 4 # Adjust to get a larger range of events, default is 4
 googlemapsapikey = "" # Add an API key to get location backgrounds and other pretties based on your vevent locations :D
 # TODO: remove this and go based on events in a day
 
@@ -177,7 +177,7 @@ class event:
 
 		# Event text
 		maintextcolor = COLORS[1] # Change this to a 3-value tuple to change the text colour!
-		maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", round(30*xyres[1]/111))
+		maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", round(40*xyres[1]/111))
 
 		eventtext = self.eventName + "\n"
 		 # time
@@ -189,7 +189,7 @@ class event:
 		if self.eventLocationName:
 			eventtext += " at " + self.eventLocationName
 
-		imagedraw.text([xyres[0]/60+10*xyres[1]/11, xyres[1]/8], eventtext, fill=maintextcolor, font=maintextfont)
+		imagedraw.text([xyres[0]/60+10*xyres[1]/11, xyres[1]/32], eventtext, fill=maintextcolor, font=maintextfont)
 
 		# Delete photos!
 		if self.eventMapPhoto:
