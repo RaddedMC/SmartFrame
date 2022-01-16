@@ -102,18 +102,19 @@ def GenerateCard():
 		printC("Counter scale factors are (" + str(startdivamt) + ", " + str(topdivamt) + ")")
 			
 		# Circles
-		cols = math.ceil(math.sqrt(count))
-		rows = round(math.sqrt(count))
-		printC("Generating a ("+str(cols)+"x"+str(rows)+") grid of " + str(count) + " circles...")
-		
-		padding = imageresx/(4*cols)
-		size = (imageresx/cols) - padding
-		for i in range(0,count):
-			col = i % cols
-			row = math.floor(i/cols)
-			xpos = (padding/2)+(size+padding)*col
-			ypos = (padding/2)+(size+padding)*row
-			imagedraw.ellipse((xpos, ypos, xpos+size, ypos+size), fill=circlesbgcolor)
+		if not count == 0:
+			cols = math.ceil(math.sqrt(count))
+			rows = round(math.sqrt(count))
+			printC("Generating a ("+str(cols)+"x"+str(rows)+") grid of " + str(count) + " circles...")
+			
+			padding = imageresx/(4*cols)
+			size = (imageresx/cols) - padding
+			for i in range(0,count):
+				col = i % cols
+				row = math.floor(i/cols)
+				xpos = (padding/2)+(size+padding)*col
+				ypos = (padding/2)+(size+padding)*row
+				imagedraw.ellipse((xpos, ypos, xpos+size, ypos+size), fill=circlesbgcolor)
 		
 		imagedraw.text((dpifactor/50,5*imageresy/8), maintext, font=maintextfont, fill=textcolor)
 		imagedraw.text((counttextstart, counttexttop), str(count), font=counttextfont, fill=textcolor) # Counter text
