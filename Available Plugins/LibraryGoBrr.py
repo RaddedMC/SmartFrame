@@ -1,36 +1,19 @@
-#!/usr/bin/python3
-# RaddedMC's SmartFrame v2 -- SingleNumber.py
-# This is a plugin template for SmartFrame v2.
-# This particular template will let you show a single large number and some small text with a fancy background.
+# RaddedMC's SmartFrame v2 -- LibraryGoBrr.py
+# Hi James
+# Library always go brr
 
-# Required deps: Pillow, termcolor
-
-# DEVELOPER INSTRUCTIONS:
-# Assume you have root priveleges.
-# Use the variables in GetCardData() to change the tile size and pixel density of your Card.
-# If you need additional files, place them into a folder of the same name as your plugin.
-# Use the global variable SMARTFRAMEFOLDER for a string with the location of the SmartFrame folder.
-# For debug/overflow purposes, make sure you set alttext to something that accurately represents your collected data.
-# Use printC(text, color of text) if you need to print. 
-# If you need to throw an error, use logError("main error description", "more detailed traceback / traceback.format_exc()", sourcename)
-# The above will log to both console and the standard error logging file.
-
-# Make sure to change the sourcename, count, alttext, and maintext variables!
-# count should be an integer greater than or equal to 0.
-# If you return set all variables to None (ex, if data can't be found), SmartFrame will display nothing for this Card.
-
-# To test, just run your card in a terminal! The image will appear in your Smartframe/Cards folder. I recommend deleting this file before running SmartFrame again.
-# Note that if your plugin crashes, it will not take down the whole SmartFrame process. However, tracebacks will be outputted to the user.
-
-# When you're ready to release to the main repo, place all your code and related files in a folder and place it into Available Plugins/, then make a pull request!
+# Required deps: Pillow, termcolor, Reqests, beautifulSoup
 
 # Add any user-definable variables here! (API keys, usernames, etc.)
-sourcename = "Set your card's default sourcename here"
+sourcename = "WeldonLibraryOccupancy"
 
 from PIL import Image, ImageFont, ImageDraw
 import os
 import sys
 import math
+from urllib.request import urlopen as uRequest 
+from bs4 import BeautifulSoup as soup
+
 
 SMARTFRAMEFOLDER = ""
 COLORS = []
@@ -38,10 +21,29 @@ COLORS = []
 #### YOUR CODE HERE ####
 def GetCardData():
 	count = 21
-	maintext = "Some data"
-	alttext = "Whatever you want!"
+	maintext = ""
+	alttext = ""
+
+	page_url = "https://www.lib.uwo.ca/taps/tapper?lib=wel"
+	uClient = uRequest(page_url)
+	page_html = uClient.read()
+	uClient.close()
+
+	page_soup = soup(page_html, "html.parser")
+
+	div = page_soup.find(id="current").text
+
+	num = ""
+	for c in div:
+		if c.isdigit():
+			num = num + c
 	
-	# Your code here
+	count = int(num)
+
+	maintext = "    Occupants\n    in DB Weldon"
+	alttext = num + " occupants in Weldon."
+
+	printC(alttext,"blue")
 	
 	return count, maintext, alttext
 #### YOUR CODE HERE ####
@@ -65,7 +67,7 @@ def GenerateCard():
 	count, maintext, alttext = GetCardData()
 	
 	if maintext and alttext:
-		maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 15*round(dpifactor/50))
+		maintextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 15*round(dpifactor/75))
 		if count < 10: # Don't worry i hate this too
 			counttextfont = ImageFont.truetype(SMARTFRAMEFOLDER + "/Fonts/font1.ttf", 50*round(dpifactor/50))
 		elif count < 20:
