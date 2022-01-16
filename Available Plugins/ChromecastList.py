@@ -10,7 +10,7 @@
 # Fetching media title from casting devices is still very borked
 # Some graphical glitches with the image generation
 
-# Required deps for ChromecastList.py: Pillow, termcolor, pychromecast
+# Required deps for ChromecastList.py: Pillow, termcolor, pychromecast -> VERSION 10.2.3 (Plugin will not work with anything lower)
 
 # Add any user-definable variables here! (API keys, usernames, etc.)
 sourcename = "ChromecastList"
