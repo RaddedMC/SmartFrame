@@ -11,7 +11,7 @@ from PIL import Image, ImageFont, ImageDraw
 import os
 import sys
 import math
-from urllib.request import urlopen as uRequest 
+import requests
 from bs4 import BeautifulSoup as soup
 
 
@@ -25,11 +25,8 @@ def GetCardData():
 	alttext = ""
 
 	page_url = "https://www.lib.uwo.ca/taps/tapper?lib=wel"
-	uClient = uRequest(page_url)
-	page_html = uClient.read()
-	uClient.close()
-
-	page_soup = soup(page_html, "html.parser")
+	response = requests.get(page_url)
+	page_soup = soup(response.content, "html.parser")
 
 	div = page_soup.find(id="current").text
 
