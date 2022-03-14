@@ -97,37 +97,36 @@ def GetCardData():
 	import wget # icon fetching 
 
 	# -- For loop to assemble items and groups -- #
-	for day in forecast:
-		itemList = [] # Resets itemList for every day
+	try:
+		printC("Attempting to parse forecast response...", "yellow")
+		for day in forecast:
+			itemList = [] # Resets itemList for every day
 
-		# -- Date variables and conversion -- #
-		unix_time = float(day['dt']) 
-		datetime_date = datetime.utcfromtimestamp(unix_time) # Converts Unix Timestamp to datetime format
-		strdate = datetime_date.strftime('%Y-%m-%d') # Converts datetime value to string
+			# -- Date variables and conversion -- #
+			unix_time = float(day['dt']) 
+			datetime_date = datetime.utcfromtimestamp(unix_time) # Converts Unix Timestamp to datetime format
+			strdate = datetime_date.strftime('%Y-%m-%d') # Converts datetime value to string
 
-		# -- Weather variables -- #
-		# -- Attempts to parse it in try-except block -- #
-		try:
-			printC("Attempting to parse forecast response...", "yellow")
+			# -- Weather variables -- #
 			max_temp = str(round(day['temp']['max'])) + chr(176) + symbol # uses char set above for unit
 			min_temp = str(round(day['temp']['min'])) + chr(176) + symbol 
 			condition = day['weather'][0]['description'].title()
 			icon_url = "http://openweathermap.org/img/wn/" + day['weather'][0]['icon'] + "@2x.png"
-			printC("Sucessfully parsed forecast response!", "green")
-		except:
-			print(forecast_data_url) # debugging purposes 
-			logError("OpenWeatherMap failed to find forecast data for your location. Exiting process...", "", sourcename)
-			exit()
+			
+			# -- Fetches icon -- #
+			wget.download(icon_url, GetPathWithinNeighbouringFolder(day['weather'][0]['icon'] + "@2x.png", "Forecast-Icons"))
 
-		# -- Fetches icon -- #
-		wget.download(icon_url, GetPathWithinNeighbouringFolder(day['weather'][0]['icon'] + "@2x.png", "Forecast-Icons"))
+			# -- Date to day of the week conversion -- #
+			day_of_the_week = calendar.day_name[datetime_date.weekday()]
 
-		# -- Date to day of the week conversion -- #
-		day_of_the_week = calendar.day_name[datetime_date.weekday()]
-
-		# -- Writes itemList and appends GroupList -- #
-		itemList.append(Item(condition, GetPathWithinNeighbouringFolder(day['weather'][0]['icon'] + "@2x.png", "Forecast-Icons"), (255,255,255), bgFillAmt=1)) # Colour TBD
-		groupList.append(Group(day_of_the_week + " " + strdate + "\n" + "High: " + max_temp + " | Low: " + min_temp , itemList))
+			# -- Writes itemList and appends GroupList -- #
+			itemList.append(Item(condition, GetPathWithinNeighbouringFolder(day['weather'][0]['icon'] + "@2x.png", "Forecast-Icons"), (255,255,255), bgFillAmt=1)) # Colour TBD
+			groupList.append(Group(day_of_the_week + " " + strdate + "\n" + "High: " + max_temp + " | Low: " + min_temp , itemList))
+	except:
+		logError("OpenWeatherMap failed to find forecast data for your location. Exiting process...", "", sourcename)
+		exit()
+	else:
+		printC("Sucessfully parsed forecast response!", "green")
 
 	# -- Modifies maintext and alttext -- #
 	maintext = "Forecast" + "\n" + place_name
