@@ -13,6 +13,7 @@ import sys
 import math
 import requests
 from bs4 import BeautifulSoup as soup
+import traceback 
 
 
 SMARTFRAMEFOLDER = ""
@@ -24,19 +25,28 @@ def GetCardData():
 	maintext = ""
 	alttext = ""
 
+	# -- Parsing D.B. Weldon website for data -- #
 	page_url = "https://www.lib.uwo.ca/taps/tapper?lib=wel"
-	response = requests.get(page_url)
+	try:
+		printC("Attempting to get library occupancy data.", "yellow")
+		response = requests.get(page_url)
+	except:
+		logError("Failed to gather library occupancy data. Exiting process...", "", sourcename)
+		exit()
+	else:
+		printC("Sucessfully gathered library occupancy data!", "green")
+	
 	page_soup = soup(response.content, "html.parser")
-
 	div = page_soup.find(id="current").text
 
-	num = ""
+	# -- String parsing from HTML content of website -- #
+	num = "" # Makes empty string
 	for c in div:
 		if c.isdigit():
-			num = num + c
+			num = num + c # Assembles number string
 	
+	# -- Card variables -- #
 	count = int(num)
-
 	maintext = "    Occupants\n    in DB Weldon"
 	alttext = num + " occupants in Weldon."
 
