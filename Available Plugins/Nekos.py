@@ -4,8 +4,6 @@
 
 # Required deps: Pillow, termcolor, nekos.py, wget
 
-sourcename = "Photo from Nekos.life "
-
 import shutil
 from PIL import Image, ImageFont, ImageDraw, ImageOps
 import os
@@ -16,6 +14,9 @@ import requests
 
 SMARTFRAMEFOLDER = ""
 COLORS = []
+
+uniqueneko = random.randrange(0,100000) # used to have more than one neko plugin with a very low chance of conflict
+sourcename = "Photo " + str(uniqueneko) + " from Nekos.life "
 
 #### YOUR CODE HERE ####
 def GetCardData():
@@ -35,7 +36,7 @@ def GetCardData():
 	try:
 		url = nekos.img("neko")
 		printC(url)
-		output = GetPathWithinNeighbouringFolder("mew.png", "")
+		output = GetPathWithinNeighbouringFolder("mew"+str(uniqueneko)+".png", "")
 		rfile = requests.get(url, stream=True)
 		if rfile.status_code == 200:
 			with open(output, "wb") as f:
