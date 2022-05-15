@@ -37,7 +37,8 @@ def GetCardData():
 	# Import Bridge and connect
 	from phue import Bridge
 	try:
-		b = Bridge("192.168.1.150")
+		global hueipaddr
+		b = Bridge(hueipaddr)
 		b.connect()
 	except:
 		printC("Error with Philips Hue! Have you paired your bridge?", "red")
